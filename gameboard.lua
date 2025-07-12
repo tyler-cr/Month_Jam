@@ -11,6 +11,11 @@ end
 -- for functions
 Grid = {}
 
+Grid.ceiling = 0
+Grid.floor = 585
+Grid.leftwall = 5
+Grid.rigtwall = 785
+
 function Grid.update(dt)
     Grid.handleMovement()
 end
@@ -61,6 +66,7 @@ function Grid.flipX()
             j = j - 1
         end
     end
+    Player.flipDY()
 end
 
 function Grid.flipY()
@@ -70,4 +76,5 @@ function Grid.flipY()
         i = i + 1
         j = j - 1
     end
+    Player.flipDX()
 end
