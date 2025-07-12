@@ -31,13 +31,8 @@ end
 
 function Player.handlemovement(dt)
 
-    if (love.keyboard.isDown('up') and Player.can_jump()) then 
-        print("your message here")
-        Player.handlejump() end
-        -- Player.my_y = math.max(Player.my_y - (300*dt), 5)
-        -- Player.my_dy = 200
-        -- Player.my_jump = false
-     
+    if (keyPressed("up") and Player.can_jump()) then
+         Player.handlejump() end
 
     if love.keyboard.isDown('down') then Player.my_dy  = math.Clamp((Player.my_dy + 10)*dt, -400, 400) end
     
@@ -52,7 +47,7 @@ function Player.handlemovement(dt)
     end
 
     --gravity
-    if Player.my_y > 4 then Player.my_dy = Player.my_dy + 10
+    if Player.my_y > 0 then Player.my_dy = Player.my_dy + 20
     elseif Player.my_y <= 4 then Player.my_dy = 0 end
 
     Player.my_y = math.Clamp(Player.my_y + Player.my_dy*dt, 4, 585)

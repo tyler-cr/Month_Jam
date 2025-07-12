@@ -1,15 +1,7 @@
 require("player")
+require("gameboard")
+
 love.graphics.setDefaultFilter('nearest', 'nearest')
-
--- Create a 600 x 800 array
-grid = {}
-for i = 1, 100 do
-    grid[i] = {}
-
-    for j = 1, 100 do
-        grid[i][j] = {1,1,1} -- color
-    end
-end
 
 time_of_completion = 0
 complete = false
@@ -22,26 +14,29 @@ function love.load()
     love.keyboard.keysPressed = {}
 end
 
-function keyPressed(key)
-    return love.keyboard.keysPressed[key]
-end
+love.keyboard.keysPressed = {}
 
 function love.keypressed(key)
-    if key == "escape" then
-        love.event.quit()
-    end
+    love.keyboard.keysPressed[key] = true
+end
+
+function keyPressed(key)
+    return love.keyboard.keysPressed[key]
 end
 
 
 function love.update(dt)
 
-    love.keyboard.keysPressed = {}
+    if love.keyboard.isDown("escape") then love.event.quit() end
 
     if not check_for_complete() then
         time_of_completion = time_of_completion + dt
     end
 
     Player.update(dt)
+    Grid.update(dt)
+
+    love.keyboard.keysPressed = {}
 
 end
 
@@ -94,34 +89,4 @@ function format_time(t)
     local minutes = math.floor(t / 60)
     local seconds = math.floor(t % 60)
     return string.format("%02d:%02d", minutes, seconds)
-end
-
-function rotate90()
-    local rows = #grid
-    local cols = #grid[1]
-    local rotated = {}
-
-    for i = 1, cols do
-        rotated[i] = {}
-        for j = 1, rows do
-            rotated[i][j] = grid[rows - j + 1][i]
-        end
-    end
-
-    grid = rotated
-end
-
-function rotateNeg90()
-    local rows = #grid
-    local cols = #grid[1]
-    local rotated = {}
-
-    for i = 1, cols do
-        rotated[i] = {}
-        for j = 1, rows do
-            rotated[i][j] = grid[j][cols - i + 1]
-        end
-    end
-
-    grid = rotated
 end
