@@ -14,15 +14,44 @@ Grid = {}
 Grid.ceiling = 0
 Grid.floor = 585
 Grid.leftwall = 5
-Grid.rigtwall = 785
+Grid.rightwall = 785
+
+Grid.center = {
+    x = 390,
+    y = 292.5
+}
+
+function distancebetweenpoints(x1, x2, y1, y2)
+    return math.sqrt((x2-x1)^2-(y2-y1)^2)
+end
+
+function slopebetweenpoints(x1, x2, y1, y2)
+    if x2 == x1 then return 999 end -- if the points x vals are the same, we have to prevent devide by zero
+    return (y2-y1)/(x2-x1)
+end
+
+function perpendicularslope(slope)
+    return -1/slope
+end
+
+function Grid.quadrant(x, y)
+    local xrel =  x - Grid.center.x
+    local yrel =  Grid.center.y - y
+
+    if      xrel > 0 and yrel > 0 then return "quad 1"
+    elseif  xrel < 0 and yrel > 0 then return "quad 2"
+    elseif  xrel < 0 and yrel < 0 then return "quad 3"
+    else                               return "quad 4" end
+
+end
 
 function Grid.update(dt)
     Grid.handleMovement()
 end
 
 function Grid.handleMovement()
-    if      keyPressed("e") then Grid.rotate90()
-    elseif  keyPressed("q") then Grid.rotateneg90()
+    if      keyPressed("q") then Grid.rotate90()
+    elseif  keyPressed("e") then Grid.rotateneg90()
     elseif  keyPressed("w") or keyPressed("s") then Grid.flipX()
     elseif  keyPressed("a") or keyPressed("d") then Grid.flipY() end
 end
@@ -40,6 +69,9 @@ function Grid.rotate90()
     end
 
     grid = rotated
+
+    Player.rotate90()
+
 end
 
 function Grid.rotateneg90()
@@ -55,6 +87,9 @@ function Grid.rotateneg90()
     end
 
     grid = rotated
+
+    Player.rotateneg90()
+
 end
 
 function Grid.flipX()

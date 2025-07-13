@@ -72,6 +72,11 @@ function love.draw()
 
     love.graphics.print(time_of_completion, 0, 16)
 
+    local test = string.format("%02d:%02d", Player.my_x, Player.my_y)
+    local test2= string.format("%02d:%02d", Player.relative_x, Player.relative_y) 
+    love.graphics.print(test, 0, 32)
+    love.graphics.print(test2, 0, 48)
+
 end
 
 function check_for_complete()

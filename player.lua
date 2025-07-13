@@ -10,6 +10,10 @@ Player = {
     my_dy = 350,
     my_dx = 0,
 
+    -- these will be used when flipped and rotating. Don't get updated unless called in function
+    relative_x = 0,
+    relative_y = 0,
+
     -- holds movement values
     dx = {max = {}},
     dy = {max = {}},
@@ -64,11 +68,16 @@ end
 
 function Player.handlemovement(dt)
 
+    --gravity
+    if Player.my_y > Grid.ceiling and Player.my_y <= Grid.floor then Player.deltaupdate(0, Player.gravity) end
+    if Player.my_y >= Grid.floor then Player.deltaoverride(Player.my_dx, 0) end
+
+
     if (keyPressed("up") and Player.can_jump()) then
          Player.handlejump() end
 
     if love.keyboard.isDown('down') then Player.deltaupdate(0, Player.dy.speedfall) end
-    
+
     if love.keyboard.isDown('left') then
         Player.deltaupdate(-Player.dx.walk, 0, Player.dx.max.walk)
     elseif love.keyboard.isDown('right') then 
@@ -76,12 +85,8 @@ function Player.handlemovement(dt)
     else
         if   math.abs(Player.my_dx) <= Player.dx.stall then  Player.my_dx = 0
         else Player.my_dx = Player.my_dx * Player.dx.floorfriction end
-        
-    end
 
-    --gravity
-    if Player.my_y > Grid.ceiling and Player.my_y <= Grid.floor then Player.deltaupdate(0, Player.gravity) end
-    if Player.my_y >= Grid.floor then Player.deltaoverride(Player.my_dx, 0) end
+    end
 
     Player.my_y = math.Clamp(Player.my_y + Player.my_dy*dt, 4, 585)
     Player.my_x = math.Clamp(Player.my_x + Player.my_dx*dt, 5, 785)
@@ -101,4 +106,53 @@ function Player.resetlocation()
     Player.my_x = 200
     Player.my_dy = 350
     Player.my_dx = 0
+end
+
+function Player.outofbounds()
+
+    if Player.my_x > grid.right or Player.my_x < grid.left or Player.my_y < grid.ceiling or Player.my_y > grid.floor then
+        Player.my_x = math.Clamp(Player.my_x, grid.left, grid.right)
+        Player.my_y = math.Clamp(Player.my_y, grid.ceiling, grid.floor)
+    end
+
+end
+
+function Player.setrelative()
+
+    Player.relative_x =  Player.my_x - Grid.center.x
+    Player.relative_y =  Player.my_y - Grid.center.y
+
+end
+
+function Player.setcoordfromrelative()
+    Player.my_x = Player.relative_x + Grid.center.x
+    Player.my_y = Player.relative_y + Grid.center.y
+end
+
+function Player.rotate90()
+
+    Player.setrelative()
+
+    local old_relative_x = Player.relative_x
+    local old_relative_y = Player.relative_y
+
+    Player.relative_x = old_relative_y
+    Player.relative_y = -old_relative_x
+
+    Player.setcoordfromrelative()
+
+end
+
+function Player.rotateneg90()
+
+    Player.setrelative()
+
+    local old_relative_x = Player.relative_x
+    local old_relative_y = Player.relative_y
+
+    Player.relative_x = -old_relative_y
+    Player.relative_y = old_relative_x
+
+    Player.setcoordfromrelative()
+
 end
