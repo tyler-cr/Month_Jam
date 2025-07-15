@@ -156,3 +156,8 @@ function Player.rotateneg90()
     Player.setcoordfromrelative()
 
 end
+
+
+--todo: when player collides with certain blocks, will reset level
+function Player.die()
+end

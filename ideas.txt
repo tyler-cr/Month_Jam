@@ -1,0 +1,1 @@
+when player collides with any block or wall above a certain delta, they die

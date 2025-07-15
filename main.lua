@@ -67,7 +67,6 @@ function love.draw()
     end
     
     love.graphics.setColor(1,1,1)
-    -- love.graphics.rectangle("fill", my_x, my_y, 10, 10)
     love.graphics.print(tostring(Player.can_jump()))
 
     love.graphics.print(time_of_completion, 0, 16)
