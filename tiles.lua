@@ -31,6 +31,17 @@ Block.on_collide = function() end
 Block.size = 8
 Block.solid = true
 
+function playerCollides(tile)
+    if Player.my_x < tile.my_x + Block.size and
+        Player.my_x + Block.size > tile.my_x and
+        Player.my_y < tile.my_y + Block.size and
+        Player.my_y + Block.size > tile.my_y then
+        return true
+    end
+    
+    return false
+end
+
 Bouncer.hit_box = {
     offset = 2,
     width = 4
