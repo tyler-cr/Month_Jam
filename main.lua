@@ -1,10 +1,14 @@
 require("player")
 require("gameboard")
+require("graphics")
+require("tiles")
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
 
 time_of_completion = 0
 complete = false
+
+local testblock = Block.init(100, 100)
 
 function love.load()
     love.window.setTitle('Game Test')
@@ -41,10 +45,6 @@ function love.update(dt)
 end
 
 function love.draw()
-    if check_for_complete() then
-        love.graphics.print(format_time(time_of_completion))
-        return
-    end
     -- Draw the grid
     for i = 1, 100 do
         for j = 1, 100 do
@@ -61,7 +61,7 @@ function love.draw()
                 love.graphics.setColor(grid[i][j][1], grid[i][j][2], grid[i][j][3])
                 love.graphics.rectangle("line", 8*(i-1)+3, 6*(j-1)+3, 5, 5)
             else 
-                love.graphics.setColor(grid[i][j][1], grid[i][j][2], grid[i][j][3])
+                love.graphics.setColor(0, 0, 0)
                 love.graphics.rectangle("line", 8*(i-1)+5, 6*(j-1), 3, 3) end
         end
     end
@@ -75,6 +75,14 @@ function love.draw()
     local test2= string.format("%02d:%02d", Player.relative_x, Player.relative_y) 
     love.graphics.print(test, 0, 32)
     love.graphics.print(test2, 0, 48)
+
+    for i = 1, #tileset do
+
+        love.graphics.draw(Tileset, tileset[i], (i-1)*10, 0)
+
+    end
+
+    testblock.draw()
 
 end
 
