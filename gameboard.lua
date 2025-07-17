@@ -1,25 +1,31 @@
 -- Create a 600 x 800 array
 grid = {}
-for i = 1, 100 do
+for i = 1, 20 do
     grid[i] = {}
 
-    for j = 1, 100 do
-        grid[i][j] = {1,1,1} -- color
+    for j = 1, 20 do
+        grid[i][j] = nil
     end
 end
 
--- for functions
-Grid = {}
+-- for i = 1, 20 do
+--     grid[i] = Block.init()
+-- end
 
-Grid.ceiling = 0
-Grid.floor = 585
-Grid.leftwall = 5
-Grid.rightwall = 785
+
+-- for functions
+Grid = {length = 480, width = 480}
+
 
 Grid.center = {
-    x = 390,
-    y = 292.5
+    x = 400,
+    y = 300
 }
+
+Grid.ceiling = Grid.center.y - 240
+Grid.floor = Grid.center.y + 240
+Grid.leftwall = Grid.center.x - 240
+Grid.rightwall = Grid.center.x + 240
 
 function distancebetweenpoints(x1, x2, y1, y2)
     return math.sqrt((x2-x1)^2-(y2-y1)^2)
