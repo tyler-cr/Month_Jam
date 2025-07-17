@@ -8,13 +8,23 @@ love.graphics.setDefaultFilter('nearest', 'nearest')
 time_of_completion = 0
 complete = false
 
+-- TESTING AREA BEGIN
+local world  = love.physics.newWorld(0, 0)
+Player.body  = love.physics.newBody(world, Player.my_x, Player.my_y, "dynamic")
+Player.shape = love.physics.newRectangleShape(Block.size, Block.size)
+
+-- TESTING AREA END
+
 function love.load()
+
     love.window.setTitle('Game Test')
 
     math.randomseed(os.time())
 
     love.keyboard.keysPressed = {}
-    print("\n"..Player.my_y)
+    
+
+
 end
 
 love.keyboard.keysPressed = {}
@@ -28,8 +38,7 @@ function keyPressed(key)
 end
 function love.update(dt) 
 
-    dt = math.min(dt, 1/30) -- cap dt to avoid huge jumps on low FPS
-
+    world:update(dt)
 
     if love.keyboard.isDown("escape") then love.event.quit() end
 
