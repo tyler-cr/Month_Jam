@@ -1,3 +1,5 @@
+require("graphics")
+
 function deep_copy(orig)
     local copy = {}
     for k, v in pairs(orig) do
@@ -53,9 +55,9 @@ function Block:init(x, y)
     local new_block = {
         my_x = x,
         my_y = y,
-        size = self.size,
-        solid = self.solid,
-        collision_box = {x = x, y = y, width = self.size},
+        size = Block.size,
+        solid = Block.solid,
+        collision_box = {x = x, y = y, width = Block.size},
     }
 
     new_block.on_collide = function() end --still gotta implement this. TODO

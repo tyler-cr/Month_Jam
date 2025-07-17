@@ -1,21 +1,7 @@
--- Create a 600 x 800 array
-grid = {}
-for i = 1, 20 do
-    grid[i] = {}
-
-    for j = 1, 20 do
-        grid[i][j] = nil
-    end
-end
-
--- for i = 1, 20 do
---     grid[i] = Block.init()
--- end
-
+require("tiles")
 
 -- for functions
 Grid = {length = 480, width = 480}
-
 
 Grid.center = {
     x = 400,
@@ -26,6 +12,26 @@ Grid.ceiling = Grid.center.y - 240
 Grid.floor = Grid.center.y + 240
 Grid.leftwall = Grid.center.x - 240
 Grid.rightwall = Grid.center.x + 240
+
+
+Grid.placementoffset = function(i) return (i-1) * Block.size end
+
+-- Create a 600 x 800 array
+grid = {}
+for i = 1, 20 do
+    grid[i] = {}
+
+    for j = 1, 20 do
+        grid[i][j] = nil
+    end
+end
+
+for i = 1, 20 do
+    grid[1][i] = Block.init(Grid.leftwall + (i-1)*24, Grid.ceiling)
+    
+end
+
+
 
 function distancebetweenpoints(x1, x2, y1, y2)
     return math.sqrt((x2-x1)^2-(y2-y1)^2)
