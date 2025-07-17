@@ -28,6 +28,9 @@ function keyPressed(key)
 end
 function love.update(dt) 
 
+    dt = math.min(dt, 1/30) -- cap dt to avoid huge jumps on low FPS
+
+
     if love.keyboard.isDown("escape") then love.event.quit() end
 
     if not check_for_complete() then
