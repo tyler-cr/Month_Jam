@@ -12,14 +12,25 @@ end
 Grid = {}
 
 Grid.ceiling = 0
-Grid.floor = 585
+Grid.floor = 568
 Grid.leftwall = 5
 Grid.rightwall = 785
 
 Grid.center = {
-    x = 390,
-    y = 292.5
+    x = (Grid.leftwall + Grid.rightwall)/2,
+    y = (Grid.ceiling + Grid.floor)/2
 }
+
+function Grid.playerCollides(tile)
+    if Player.my_x < tile.my_x + Block.size and
+        Player.my_x + Block.size > tile.my_x and
+        Player.my_y < tile.my_y + Block.size and
+        Player.my_y + Block.size > tile.my_y then
+        return true
+    end
+
+    return false
+end
 
 function distancebetweenpoints(x1, x2, y1, y2)
     return math.sqrt((x2-x1)^2-(y2-y1)^2)

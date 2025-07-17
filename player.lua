@@ -18,15 +18,15 @@ Player = {
     dx = {max = {}},
     dy = {max = {}},
 
-    touching_left_wall = function () return Player.my_x <= 5   end,
-    touching_right_wall= function () return Player.my_x >= 785 end,
+    touching_left_wall = function () return Player.my_x <= Grid.leftwall   end,
+    touching_right_wall= function () return Player.my_x >= Grid.rightwall end,
 
-    can_jump = function ()  return (Player.my_y >= 585 or Player.touching_left_wall() or Player.touching_right_wall()) end
+    can_jump = function ()  return (Player.my_y >= Grid.floor or Player.touching_left_wall() or Player.touching_right_wall()) end
 }
 
 Player.dx.max.walk = 700
 Player.dy.max.jump = 500
-Player.dy.jump = -350
+Player.dy.jump = -450
 Player.dy.speedfall = 20
 Player.dx.walljump = 500
 Player.dx.walk = 50
@@ -36,6 +36,10 @@ Player.gravity = 20
 
 function Player.update(dt)
     Player.handlemovement(dt)
+end
+
+function Player.draw()
+    drawTile(tileset.tile.player_active, Player)
 end
 
 function Player.deltaupdate(dx, dy, maxDX, maxDY)
@@ -88,8 +92,8 @@ function Player.handlemovement(dt)
 
     end
 
-    Player.my_y = math.Clamp(Player.my_y + Player.my_dy*dt, 4, 585)
-    Player.my_x = math.Clamp(Player.my_x + Player.my_dx*dt, 5, 785)
+    Player.my_y = math.Clamp(Player.my_y + Player.my_dy*dt, Grid.ceiling, Grid.floor)
+    Player.my_x = math.Clamp(Player.my_x + Player.my_dx*dt, Grid.leftwall, Grid.rightwall)
 
 end
 
