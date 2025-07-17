@@ -5,10 +5,11 @@ function math.Clamp(val, lower, upper)
 end
 
 Player = {
-    my_y = Grid.center.y,
+    my_y = Grid.floor,
     my_x = Grid.center.x,
     my_dy = 350,
     my_dx = 0,
+    highest = Grid.floor,
 
     draw = function() drawTile(tileset.tile.player_active, Player) end,
 
@@ -37,6 +38,7 @@ Player.dx.floorfriction = .9
 Player.gravity = 20
 
 function Player.update(dt)
+    if Player.my_y < Player.highest then Player.highest =  Player.my_y end
     Player.handlemovement(dt)
 end
 

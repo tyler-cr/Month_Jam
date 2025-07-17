@@ -53,6 +53,7 @@ function love.draw()
     
     love.graphics.print(math.floor(Player.my_x).." : "..math.floor(Player.my_y), 10, 10)
     love.graphics.print(math.floor(Player.my_dx).." : "..math.floor(Player.my_dy), 10, 20)
+    love.graphics.print(math.floor(Player.highest), 10, 30)
 
 
     --END OF TESTING AREA
