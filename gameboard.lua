@@ -1,36 +1,37 @@
--- Create a 600 x 800 array
-grid = {}
-for i = 1, 100 do
-    grid[i] = {}
-
-    for j = 1, 100 do
-        grid[i][j] = {1,1,1} -- color
-    end
-end
+require("tiles")
 
 -- for functions
-Grid = {}
-
-Grid.ceiling = 0
-Grid.floor = 568
-Grid.leftwall = 5
-Grid.rightwall = 785
+Grid = {length = 480, width = 480}
 
 Grid.center = {
-    x = (Grid.leftwall + Grid.rightwall)/2,
-    y = (Grid.ceiling + Grid.floor)/2
+    x = 400,
+    y = 300
 }
 
-function Grid.playerCollides(tile)
-    if Player.my_x < tile.my_x + Block.size and
-        Player.my_x + Block.size > tile.my_x and
-        Player.my_y < tile.my_y + Block.size and
-        Player.my_y + Block.size > tile.my_y then
-        return true
-    end
+Grid.ceiling = Grid.center.y - 240
+Grid.floor = Grid.center.y + 240
+Grid.leftwall = Grid.center.x - 240
+Grid.rightwall = Grid.center.x + 240
 
-    return false
+
+Grid.placementoffset = function(i) return (i-1) * Block.size end
+
+-- Create a 600 x 800 array
+grid = {}
+for i = 1, 20 do
+    grid[i] = {}
+
+    for j = 1, 20 do
+        grid[i][j] = nil
+    end
 end
+
+for i = 1, 20 do
+    grid[1][i] = Block.init(Grid.leftwall + (i-1)*24, Grid.ceiling)
+    
+end
+
+
 
 function distancebetweenpoints(x1, x2, y1, y2)
     return math.sqrt((x2-x1)^2-(y2-y1)^2)

@@ -5,10 +5,12 @@ function math.Clamp(val, lower, upper)
 end
 
 Player = {
-    my_y = 100,
-    my_x = 200,
+    my_y = Grid.center.y,
+    my_x = Grid.center.x,
     my_dy = 350,
     my_dx = 0,
+
+    draw = function() drawTile(tileset.tile.player_active, Player) end,
 
     -- these will be used when flipped and rotating. Don't get updated unless called in function
     relative_x = 0,
@@ -75,12 +77,14 @@ function Player.handlemovement(dt)
     --gravity
     if Player.my_y > Grid.ceiling and Player.my_y <= Grid.floor then Player.deltaupdate(0, Player.gravity) end
     if Player.my_y >= Grid.floor then Player.deltaoverride(Player.my_dx, 0) end
+    if Player.my_y <= Grid.ceiling then Player.deltaoverride(Player.my_dx, Player.gravity) end
 
 
     if (keyPressed("up") and Player.can_jump()) then
          Player.handlejump() end
 
-    if love.keyboard.isDown('down') then Player.deltaupdate(0, Player.dy.speedfall) end
+    if love.keyboard.isDown('down') then 
+        Player.deltaupdate(0, Player.dy.speedfall) end
 
     if love.keyboard.isDown('left') then
         Player.deltaupdate(-Player.dx.walk, 0, Player.dx.max.walk)
@@ -105,15 +109,18 @@ function Player.flipDY()
     Player.my_dy = -Player.my_dy
 end
 
+function Player.getadjacentblocks()
+
+end
+
 function Player.resetlocation()
-    Player.my_y = 100
-    Player.my_x = 200
+    Player.my_y = Grid.center.x
+    Player.my_x = Grid.center.y
     Player.my_dy = 350
     Player.my_dx = 0
 end
 
 function Player.outofbounds()
-
     if Player.my_x > grid.right or Player.my_x < grid.left or Player.my_y < grid.ceiling or Player.my_y > grid.floor then
         Player.my_x = math.Clamp(Player.my_x, grid.left, grid.right)
         Player.my_y = math.Clamp(Player.my_y, grid.ceiling, grid.floor)

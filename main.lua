@@ -1,11 +1,12 @@
-require("player")
 require("gameboard")
+require("player")
 require("graphics")
 require("tiles")
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
 
 time_of_completion = 0
+complete = false
 
 function love.load()
     love.window.setTitle('Game Test')
@@ -13,6 +14,7 @@ function love.load()
     math.randomseed(os.time())
 
     love.keyboard.keysPressed = {}
+    print("\n"..Player.my_y)
 end
 
 love.keyboard.keysPressed = {}
@@ -40,12 +42,20 @@ function love.update(dt)
 end
 
 function love.draw()
+    
+    love.graphics.rectangle("line", Grid.leftwall, Grid.ceiling, Grid.length+24, Grid.width+24)
 
     Player.draw()
 
     love.graphics.setColor(1,1,1)
 
-    love.graphics.print(time_of_completion, 0, 16)
+    --BEGINNING OF TESTING AREA
+    
+    love.graphics.print(math.floor(Player.my_x).." : "..math.floor(Player.my_y), 10, 10)
+    love.graphics.print(math.floor(Player.my_dx).." : "..math.floor(Player.my_dy), 10, 20)
+
+
+    --END OF TESTING AREA
 
 end
 

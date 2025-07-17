@@ -1,3 +1,5 @@
+require("graphics")
+
 function deep_copy(orig)
     local copy = {}
     for k, v in pairs(orig) do
