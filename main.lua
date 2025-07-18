@@ -38,6 +38,7 @@ function createBorder()
     border.bottom.body = love.physics.newBody(world, Grid.leftwall, Grid.floor+24, "static")
     border.bottom.shape = love.physics.newRectangleShape(Grid.width/2, 0, Grid.width+24, 1)
     border.bottom.fixture = love.physics.newFixture(border.bottom.body, border.bottom.shape)
+    border.bottom.fixture:setFriction(.9)
 
     border.right.body = love.physics.newBody(world, Grid.rightwall+24, Grid.ceiling, "static")
     border.right.shape = love.physics.newRectangleShape(0, Grid.length/2, 1, Grid.length+24)
