@@ -7,7 +7,7 @@ end
 Player = {
     my_y = Grid.floor,
     my_x = Grid.center.x,
-    my_dy = 350,
+    my_dy = 0,
     my_dx = 0,
     highest = Grid.floor,
 
@@ -24,15 +24,15 @@ Player = {
     touching_left_wall = function () return Player.my_x <= Grid.leftwall   end,
     touching_right_wall= function () return Player.my_x >= Grid.rightwall end,
 
-    can_jump = function ()  return (Player.my_y >= Grid.floor or Player.touching_left_wall() or Player.touching_right_wall()) end
+    can_jump = function ()  return (Player.my_y >= 536 or Player.touching_left_wall() or Player.touching_right_wall()) end
 }
 
-Player.dx.max.walk = 700
-Player.dy.max.jump = 500
-Player.dy.jump = -450
-Player.dy.speedfall = 20
+Player.dx.max.walk = 70
+Player.dy.max.jump = 10
+Player.dy.jump = -180
+Player.dy.speedfall = 5
 Player.dx.walljump = 500
-Player.dx.walk = 50
+Player.dx.walk = 5
 Player.dx.stall = 25
 Player.dx.floorfriction = .9
 Player.gravity = 20
@@ -77,29 +77,31 @@ end
 function Player.handlemovement(dt)
 
     --gravity
-    if Player.my_y > Grid.ceiling and Player.my_y <= Grid.floor then Player.deltaupdate(0, Player.gravity) end
-    if Player.my_y >= Grid.floor then Player.deltaoverride(Player.my_dx, 0) end
-    if Player.my_y <= Grid.ceiling then Player.deltaoverride(Player.my_dx, Player.gravity) end
+    -- if Player.my_y > Grid.ceiling and Player.my_y <= Grid.floor then Player.deltaupdate(0, Player.gravity) end
+    -- if Player.my_y >= Grid.floor then Player.deltaoverride(Player.my_dx, 0) end
+    -- if Player.my_y <= Grid.ceiling then Player.deltaoverride(Player.my_dx, Player.gravity) end
+    Player.my_dx = 0
+    Player.my_dy = 0
 
-
-    if (keyPressed("up") and Player.can_jump()) then
-         Player.handlejump() end
+    if keyPressed("up") and Player.can_jump() then
+        Player.body:applyLinearImpulse(0, Player.dy.jump) 
+        end
 
     if love.keyboard.isDown('down') then 
-        Player.deltaupdate(0, Player.dy.speedfall) end
+        Player.body:applyLinearImpulse(Player.my_dx, Player.dy.speedfall)
+        end
 
     if love.keyboard.isDown('left') then
-        Player.deltaupdate(-Player.dx.walk, 0, Player.dx.max.walk)
-    elseif love.keyboard.isDown('right') then 
-        Player.deltaupdate(Player.dx.walk, 0, Player.dx.max.walk)
-    else
-        if   math.abs(Player.my_dx) <= Player.dx.stall then  Player.my_dx = 0
-        else Player.my_dx = Player.my_dx * Player.dx.floorfriction end
-
+        Player.body:applyLinearImpulse(Player.my_dx, Player.my_dy)
+        Player.my_dx = -Player.dx.walk
+    elseif love.keyboard.isDown('right') then
+        Player.body:applyLinearImpulse(Player.my_dx, Player.my_dy)
+        Player.my_dx = Player.dx.walk
     end
 
-    Player.my_y = math.Clamp(Player.my_y + Player.my_dy*dt, Grid.ceiling, Grid.floor)
-    Player.my_x = math.Clamp(Player.my_x + Player.my_dx*dt, Grid.leftwall, Grid.rightwall)
+    Player.body:applyLinearImpulse(Player.my_dx, Player.my_dy)
+
+    Player.my_x, Player.my_y = Player.body:getPosition()
 
 end
 
