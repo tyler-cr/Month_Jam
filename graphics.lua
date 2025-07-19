@@ -1,4 +1,4 @@
-Tileset = love.graphics.newImage('tileset.png')
+Tileset = love.graphics.newImage('images/tileset.png')
 
 function GenerateQuads(atlas, tilewidth, tileheight)
     local sheetWidth = atlas:getWidth() / tilewidth

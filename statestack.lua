@@ -4,6 +4,7 @@ statestack = {}
 Statestack = {}
 
 function Statestack.push(state)
+    state.init()
     table.insert(statestack, 1, state)
 end
 
@@ -19,8 +20,8 @@ function Statestack.update(dt)
     if statestack[1] then statestack[1].update(dt) end
 end
 
-function Statestack.render()
+function Statestack.draw()
     for i = #statestack, 1, -1 do
-        statestack[i].render()
+        statestack[i].draw()
     end
 end

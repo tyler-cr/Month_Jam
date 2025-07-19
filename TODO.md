@@ -1,10 +1,10 @@
 # 🎮 Game Dev To-Do List
 
 ## 🧱 Core Mechanics
-- [ ] 🔁 Fix player rotation system (position, velocity, collisions)
+- [X] 🔁 Fix player rotation system (position, velocity, collisions)
 - [ ] 🧍‍♂️ Implement level transitions (load next level, reset player)
 - [ ] 📐 Build level editor (tile placement, saving/loading)
-- [ ] 🦘 Fix jumping (consistent height across systems, frame-independent)
+- [X] 🦘 Fix jumping (consistent height across systems, frame-independent)
 
 ## 🧭 Game Flow
 - [ ] 🧪 Create tutorial level (movement, jumping, rotation)

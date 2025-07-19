@@ -16,22 +16,28 @@ Grid.rightwall = Grid.center.x + 240
 
 Grid.placementoffset = function(i) return (i-1) * Block.size end
 
--- Create a 600 x 800 array
-grid = {}
-for i = 1, 20 do
-    grid[i] = {}
+Grid.border = {top = {}, bottom = {}, left = {}, right = {}}
 
-    for j = 1, 20 do
-        grid[i][j] = nil
-    end
+function Grid.createBorder()
+    Grid.border.top.body = love.physics.newBody(world, Grid.leftwall, Grid.ceiling, "static")
+    Grid.border.top.shape = love.physics.newRectangleShape(Grid.width/2, 1, Grid.width, 1)
+    Grid.border.top.fixture = love.physics.newFixture(Grid.border.top.body, Grid.border.top.shape)
+
+    Grid.border.left.body = love.physics.newBody(world, Grid.leftwall, Grid.ceiling, "static")
+    Grid.border.left.shape = love.physics.newRectangleShape(0, Grid.length/2, 1, Grid.length)
+    Grid.border.left.fixture = love.physics.newFixture(Grid.border.left.body, Grid.border.left.shape)
+
+    Grid.border.bottom.body = love.physics.newBody(world, Grid.leftwall, Grid.floor+24, "static")
+    Grid.border.bottom.shape = love.physics.newRectangleShape(Grid.width/2, 0, Grid.width+24, 1)
+    Grid.border.bottom.fixture = love.physics.newFixture(Grid.border.bottom.body, Grid.border.bottom.shape)
+    Grid.border.bottom.fixture:setFriction(.5)
+
+    Grid.border.right.body = love.physics.newBody(world, Grid.rightwall+24, Grid.ceiling, "static")
+    Grid.border.right.shape = love.physics.newRectangleShape(0, Grid.length/2, 1, Grid.length+24)
+    Grid.border.right.fixture = love.physics.newFixture(Grid.border.right.body, Grid.border.right.shape)
 end
 
-for i = 1, 20 do
-    grid[1][i] = Block.init(Grid.leftwall + (i-1)*24, Grid.ceiling)
-    
-end
-
-
+Grid.objects = {Player}
 
 function distancebetweenpoints(x1, x2, y1, y2)
     return math.sqrt((x2-x1)^2-(y2-y1)^2)
@@ -64,64 +70,22 @@ end
 function Grid.handleMovement()
     if      keyPressed("q") then Grid.rotate90()
     elseif  keyPressed("e") then Grid.rotateneg90()
-    elseif  keyPressed("w") or keyPressed("s") then Grid.flipX()
-    elseif  keyPressed("a") or keyPressed("d") then Grid.flipY() end
+    elseif  keyPressed("w") or keyPressed("s") then Grid.flipXaxis()
+    elseif  keyPressed("a") or keyPressed("d") then Grid.flipYaxis() end
 end
 
 function Grid.rotate90()
-    local rows = #grid
-    local cols = #grid[1]
-    local rotated = {}
-
-    for i = 1, cols do
-        rotated[i] = {}
-        for j = 1, rows do
-            rotated[i][j] = grid[rows - j + 1][i]
-        end
-    end
-
-    grid = rotated
-
     Player.rotate90()
-
 end
 
 function Grid.rotateneg90()
-    local rows = #grid
-    local cols = #grid[1]
-    local rotated = {}
-
-    for i = 1, cols do
-        rotated[i] = {}
-        for j = 1, rows do
-            rotated[i][j] = grid[j][cols - i + 1]
-        end
-    end
-
-    grid = rotated
-
     Player.rotateneg90()
-
 end
 
-function Grid.flipX()
-    for _, row in ipairs(grid) do
-        local i, j = 1, #row
-        while i < j do
-            row[i], row[j] = row[j], row[i]
-            i = i + 1
-            j = j - 1
-        end
-    end
-    Player.flipDY()
+function Grid.flipXaxis()
+    Player.flipXaxis()
 end
 
-function Grid.flipY()
-    local i, j = 1, #grid
-    while i < j do
-        grid[i], grid[j] = grid[j], grid[i]
-        i = i + 1
-        j = j - 1
-    end
-    Player.flipDX()
+function Grid.flipYaxis()
+    Player.flipYaxis()
 end
