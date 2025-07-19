@@ -10,6 +10,10 @@ love.graphics.setDefaultFilter('nearest', 'nearest')
 
 -- TESTING AREA BEGIN
 local curFastestX, curFastestY = 0,0
+
+local fixed_dt = 1/60
+local accumulator = 0
+
 -- TESTING AREA END
 
 function love.load()
@@ -31,7 +35,6 @@ function keyPressed(key)
 end
 
 function love.update(dt)
-    
     local curVX, curVY = Player.body:getLinearVelocity()
 
     if math.abs(curVX) > math.abs(curFastestX) then curFastestX = math.abs(curVX) end
@@ -39,7 +42,9 @@ function love.update(dt)
 
 
     if love.keyboard.isDown("escape") then love.event.quit() end
+
     Statestack.update(dt)
+
     love.keyboard.keysPressed = {}
 end
 

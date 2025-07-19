@@ -4,9 +4,18 @@ function Level.init()
     Level.objects = {Player}
 end
 
+local fixed_dt = 1/60
+local accumulator = 0
+
 function Level.update(dt)
 
-    world:update(dt)
+    accumulator = accumulator + dt
+
+    while accumulator >= fixed_dt do
+        world:update(fixed_dt)
+        accumulator = accumulator - fixed_dt
+    end
+
     Player.update(dt)
     Grid.update(dt)
 
