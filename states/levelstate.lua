@@ -9,6 +9,7 @@ end
 local fixed_dt = 1/60
 local accumulator = 0
 
+-- maybe remove the fixed_dt
 function Level.update(dt)
 
     accumulator = accumulator + dt
