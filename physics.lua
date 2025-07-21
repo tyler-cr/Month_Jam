@@ -1,6 +1,33 @@
 world  = love.physics.newWorld(0, 900)
 
+
+function beginContact(a, b, coll)
+    
+end
+
+function endContact(a, b, coll)
+
+end
+
+function preSolve(a, b, coll)
+
+end
+
+function postSolve(a, b, coll, normalImpulse, tangentImpulse)
+    if Physics.collidedObjects(a, b, "Player", "Glass" and normalImpulse > Glass.breakAt then
+            print("normalImpulse:", normalImpulse)
+        end
+end
+
+world:setCallbacks(beginContact, endContact, preSolve, postSolve)
+
 Physics = {}
+
+function Physics.collidedObjects(a, b, string1, string2)
+    local aString, bString = a:getUserData(), b:getUserData()
+
+    return (aString == string1 and bString == string2) or (aString == string2 and bString == string1)
+end
 
 function Physics.createRectangle(obj, type, width, height)
 
@@ -13,6 +40,7 @@ function Physics.createRectangle(obj, type, width, height)
     obj.fixture  = love.physics.newFixture(obj.body, obj.shape)
     obj.body:setFixedRotation(true)
 end
+
 
 function Physics.createCircle(obj, type, radius)
     new_radius = radius or Block.size
