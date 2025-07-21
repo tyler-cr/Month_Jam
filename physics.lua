@@ -41,6 +41,11 @@ function Physics.createRectangle(obj, type, width, height)
     obj.body:setFixedRotation(true)
 end
 
+function Physics.addRectangle(obj, xOffset, yOffset, width, height)
+    obj.shape2 = love.physics.newRectangleShape(width/2, height/2, width, height)
+    obj.fixture2  = love.physics.newFixture(obj.body, obj.shape2)
+end
+
 
 function Physics.createCircle(obj, type, radius)
     new_radius = radius or Block.size
