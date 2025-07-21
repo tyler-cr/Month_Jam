@@ -80,3 +80,15 @@ function drawTile(tile, new_tile)
 
     love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale)
 end
+
+function drawBH(type, new_tile)
+    local middleX, middleY = new_tile.my_x, new_tile.my_y
+    for i = 1, 3 do
+        local drawtop = type.top[i]
+        local drawmid = type.middle[i]
+
+        love.graphics.draw(Tileset, drawtop, middleX+24*(-2 + i), middleY-Block.size, 0, tileset.scale, tileset.scale)
+        love.graphics.draw(Tileset, drawmid, middleX+24*(-2 + i), middleY, 0, tileset.scale, tileset.scale)
+    end
+        love.graphics.draw(Tileset, type.bottom[1], middleX, middleY+Block.size, 0, tileset.scale, tileset.scale)
+end

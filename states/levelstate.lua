@@ -1,7 +1,9 @@
 Level = {}
 
 function Level.init()
-    Level.objects = {Player}
+    local test = Glass.init(200,500)
+
+    Level.objects = {Player, test}
 end
 
 local fixed_dt = 1/60

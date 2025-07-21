@@ -8,7 +8,6 @@ function Physics.createRectangle(obj, type, width, height)
     local new_shape_height = height or Block.size
     local new_shape_type = type or "static"
 
-
     obj.body     = love.physics.newBody(world, obj.my_x, obj.my_y, new_shape_type)
     obj.shape    = love.physics.newRectangleShape(new_shape_width/2, new_shape_height/2, new_shape_width, new_shape_height)
     obj.fixture  = love.physics.newFixture(obj.body, obj.shape)
