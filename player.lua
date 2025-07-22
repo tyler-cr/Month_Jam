@@ -7,6 +7,8 @@ function math.Clamp(val, lower, upper)
 end
 
 Player = {
+    drawMe = true,
+
     my_y = Grid.floor,
     my_x = Grid.center.x,
     my_dy = 0,
@@ -26,10 +28,11 @@ Player = {
     touching_left_wall = function () return Player.my_x <= Grid.leftwall   end,
     touching_right_wall= function () return Player.my_x >= Grid.rightwall end,
 
-    grounded = function ()  return (Player.my_y >= 536 or Player.touching_left_wall() or Player.touching_right_wall()) end
+    grounded = false
 }
 
 Physics.createRectangle(Player, "dynamic")
+Player.fixture:setUserData("Player")
 
 Player.dx.max.walk = 210
 Player.dy.max.jump = 500
@@ -42,6 +45,9 @@ Player.gravity = 2
 
 function Player.update(dt)
     if Player.my_y < Player.highest then Player.highest =  Player.my_y end
+
+    if Player.my_y >= Grid.floor then Player.grounded = true end
+
     Player.handlemovement(dt)
 end
 
@@ -59,10 +65,10 @@ function Player.handlemovement(dt)
         Player.my_dx = Player.dx.walk
     end
 
-    if keyPressed("up") and Player.grounded() then
-        Player.my_dy = Player.dy.jump 
+    if keyPressed("up") and Player.grounded then
+        Player.my_dy = Player.dy.jump
     end
-    
+
     Player.body:applyLinearImpulse(Player.my_dx, Player.my_dy)
     Player.my_x, Player.my_y = Player.body:getPosition()
 end
@@ -122,9 +128,6 @@ function Player.flipXaxis()
 
     Player.setrelative()
 
-    local old_relative_x = Player.relative_x
-    local old_relative_y = Player.relative_y
-
     Player.relative_y = -Player.relative_y
     Player.setcoordfromrelative()
     Physics.setPosn(Player)
@@ -135,9 +138,6 @@ end
 function Player.flipYaxis()
     Player.setrelative()
 
-    local old_relative_x = Player.relative_x
-    local old_relative_y = Player.relative_y
-
     Player.relative_x = -Player.relative_x
     Player.setcoordfromrelative()
     Physics.setPosn(Player)
@@ -146,4 +146,11 @@ end
 
 --todo: when player collides with certain blocks, will reset level
 function Player.die()
+    Player.my_dx = 0
+    Player.my_dy = 0
+    Player.my_y = Grid.floor
+    Player.my_x = Grid.center.x
+
+    Player.body:setLinearVelocity(0,0)
+    Player.body:setPosition(Player.my_x, Player.my_y)
 end

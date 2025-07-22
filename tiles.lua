@@ -12,7 +12,6 @@ function deep_copy(orig)
     return copy
 end
 
-
 Block = {tile = tileset.tile.block}
 Computer = {tile = tileset.tile.computer}
 Bouncer = {tile = tileset.tile.bouncer}
@@ -41,19 +40,23 @@ Bouncer.hit_box = {
     width = 4
 }
 
-Blackhole.pull = 24 --how far away a player 
+Blackhole.pull = 48 --how far away a player
+Blackhole.kill = 12
 
 function Block.init(x, y)
     local new_block = {
+        drawMe = true,
         my_x = x,
         my_y = y,
         size = Block.size,
         solid = Block.solid,
         collision_box = {x = x, y = y, width = Block.size},
     }
-    
+
     Physics.createRectangle(new_block)
-    new_block.fixture:setUserData("block")
+    new_block.fixture:setUserData("Block")
+
+    new_block.update = function(dt) if new_block.body:isDestroyed() then new_block.drawMe = false end end
 
     new_block.draw = function() drawTile(Block.tile, new_block) end
 
@@ -63,7 +66,7 @@ end
 function Computer.init(x, y)
     local new_computer = Block.init(x, y)
 
-    new_computer.fixture:setUserData("computer")
+    new_computer.fixture:setUserData("Computer")
 
     new_computer.draw = function() drawTile(Computer.tile, new_computer) end
 
@@ -132,7 +135,20 @@ end
 function Blackhole.init(x, y)
     local new_blackhole = Block.init(x, y)
 
+    new_blackhole.center = {}
+
+    new_blackhole.center.x = new_blackhole.my_x+12
+    new_blackhole.center.y = new_blackhole.my_y+12
+
+
     new_blackhole.fixture:setUserData("Blackhole")
+
+    new_blackhole.update = function(dt)
+        local distance = math.sqrt((Player.my_x - new_blackhole.center.x)^2+(Player.my_y - new_blackhole.center.y)^2)
+   
+        if distance <= 64 then Player.body:applyLinearImpulse((new_blackhole.center.x - Player.my_x), (new_blackhole.center.y - Player.my_y)) end
+        if distance <= 24 then Player.die() end
+    end
 
     new_blackhole.draw = function() drawBH(Blackhole.tile, new_blackhole) end
 
@@ -143,6 +159,14 @@ function Whitehole.init(x, y)
     local new_whitehole = Blackhole.init(x, y)
 
     new_whitehole.fixture:setUserData("Whitehole")
+
+    new_whitehole.update = function(dt)
+        local distance = math.sqrt((Player.my_x+12 - new_whitehole.center.x)^2+(Player.my_y+12 - new_whitehole.center.y)^2)
+   
+        if distance <= Blackhole.pull then Player.body:applyLinearImpulse((Player.my_x - new_whitehole.center.x), (Player.my_y - new_whitehole.center.y)) end
+        if distance <= Blackhole.kill then Player.die() end
+    end
+
     new_whitehole.draw = function() drawBH(Whitehole.tile, new_whitehole) end
 
     return new_whitehole

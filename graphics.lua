@@ -50,8 +50,8 @@ tileset = {tile = {}, rotation = {}, scale = {}}
 tileset.tile.block =             quadtable[1]
 tileset.tile.computer =          quadtable[2]
 tileset.tile.bouncer =           quadtable[3]
-tileset.tile.onewaydoor =        quadtable[4]
-tileset.tile.directionaldoor =   quadtable[5]
+tileset.tile.onewaydoor =        quadtable[5]
+tileset.tile.directionaldoor =   quadtable[4]
 tileset.tile.opendoor =          quadtable[6]
 tileset.tile.cannon =            quadtable[7]
 tileset.tile.teleport =       {quadtable[8], quadtable[9], quadtable[10]}

@@ -1,7 +1,7 @@
 Level = {}
 
 function Level.init()
-    local test = Glass.init(200,500)
+    local test = Blackhole.init(200,Grid.floor)
 
     Level.objects = {Player, test}
 end
@@ -19,21 +19,27 @@ function Level.update(dt)
         accumulator = accumulator - fixed_dt
     end
 
-    Player.update(dt)
+    for _, val in pairs(Level.objects) do
+        val.update(dt)
+    end
+
     Grid.update(dt)
 
 end
 
 function Level.draw()
-    for _, val in pairs(Level.objects) do
-        val.draw()
+    
+    for i = #Level.objects, 1, -1 do
+        local val = Level.objects[i]
+        if val.drawMe then val.draw() end
     end
+
 
     love.graphics.rectangle("line", Grid.leftwall, Grid.ceiling, Grid.length+24, Grid.width+24)
 
     love.graphics.print(math.floor(Player.my_x).." : "..math.floor(Player.my_y), 10, 10)
     love.graphics.print(math.floor(Player.my_dx).." : "..math.floor(Player.my_dy), 10, 20)
     love.graphics.print(math.floor(Player.highest), 10, 30)
-    love.graphics.print(tostring(Player.grounded()), 10, 40)
+    love.graphics.print(tostring(Player.grounded), 10, 40)
 
 end

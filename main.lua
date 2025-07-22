@@ -7,12 +7,11 @@ require("graphics")
 require("tiles")
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
-
+local fps = 0
 -- TESTING AREA BEGIN
 local curFastestX, curFastestY = 0,0
 
-local fixed_dt = 1/60
-local accumulator = 0
+local mouse_x, mouse_y = love.mouse.getPosition()
 
 -- TESTING AREA END
 
@@ -35,6 +34,7 @@ function keyPressed(key)
 end
 
 function love.update(dt)
+
     local curVX, curVY = Player.body:getLinearVelocity()
 
     if math.abs(curVX) > math.abs(curFastestX) then curFastestX = math.abs(curVX) end
@@ -45,12 +45,13 @@ function love.update(dt)
 
     Statestack.update(dt)
 
+
     love.keyboard.keysPressed = {}
+
 end
 
 function love.draw()
     love.graphics.setColor(1,1,1)
     Statestack.draw()
-
-    love.graphics.print(math.floor(curFastestX).." : "..math.floor(curFastestY))
+    
 end
