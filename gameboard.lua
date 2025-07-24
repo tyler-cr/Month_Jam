@@ -33,7 +33,7 @@ function Grid.createBorder()
     Grid.border.bottom.shape = love.physics.newRectangleShape(Grid.width/2, 0, Grid.width+24, 1)
     Grid.border.bottom.fixture = love.physics.newFixture(Grid.border.bottom.body, Grid.border.bottom.shape)
     Grid.border.bottom.fixture:setUserData("Block")
-    Grid.border.bottom.fixture:setFriction(.5)
+    Grid.border.bottom.fixture:setFriction(0.1)
 
     Grid.border.right.body = love.physics.newBody(world, Grid.rightwall+24, Grid.ceiling, "static")
     Grid.border.right.shape = love.physics.newRectangleShape(0, Grid.length/2, 1, Grid.length+24)

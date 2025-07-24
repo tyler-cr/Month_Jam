@@ -10,7 +10,7 @@ function GenerateQuads(atlas, tilewidth, tileheight)
     for y=0, sheetHeight-1 do
         for x=0, sheetWidth-1 do
             spritesheet[sheetCounter]=
-                love.graphics.newQuad(x*tilewidth,y*tileheight, tilewidth,
+                love.graphics.newQuad(x*tilewidth+(2*x),y*tileheight+(2*y), tilewidth,
                     tileheight, atlas:getDimensions())
                 sheetCounter = sheetCounter + 1
         end
@@ -44,7 +44,7 @@ function GenerateTileSets(quads, setsX, setsY, sizeX, sizeY)
     return tilesets
 end
 
-local quadtable =  GenerateQuads(Tileset, 8, 8)
+local quadtable =  GenerateQuads(Tileset, 24, 24)
 
 tileset = {tile = {}, rotation = {}, scale = {}}
 tileset.tile.block =             quadtable[1]
@@ -74,11 +74,14 @@ tileset.rotation.default = 0
 
 
 
-function drawTile(tile, new_tile)
+function drawTile(tile, new_tile, r)
 
     if r == nil then r = tileset.rotation.default end
-
-    love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale)
+    
+    -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, 12, 12)
+    -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, -12, 12)
+    -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, -120, 0)
+    love.graphics.draw(Tileset, tile, new_tile.my_x+12, new_tile.my_y+12, r, 1, 1, 12, 12)
 end
 
 function drawBH(type, new_tile)
@@ -87,8 +90,8 @@ function drawBH(type, new_tile)
         local drawtop = type.top[i]
         local drawmid = type.middle[i]
 
-        love.graphics.draw(Tileset, drawtop, middleX+24*(-2 + i), middleY-Block.size, 0, tileset.scale, tileset.scale)
-        love.graphics.draw(Tileset, drawmid, middleX+24*(-2 + i), middleY, 0, tileset.scale, tileset.scale)
+        love.graphics.draw(Tileset, drawtop, middleX+24*(-2 + i), middleY-Block.size, 0)
+        love.graphics.draw(Tileset, drawmid, middleX+24*(-2 + i), middleY, 0)
     end
-        love.graphics.draw(Tileset, type.bottom[1], middleX, middleY+Block.size, 0, tileset.scale, tileset.scale)
+        love.graphics.draw(Tileset, type.bottom[1], middleX, middleY+Block.size, 0)
 end

@@ -12,21 +12,21 @@ function deep_copy(orig)
     return copy
 end
 
-Block = {tile = tileset.tile.block}
-Computer = {tile = tileset.tile.computer}
-Bouncer = {tile = tileset.tile.bouncer}
-OneWayDoor = {tile = tileset.tile.onewaydoor}
-DirectionalDoor = {tile = tileset.tile.directionaldoor}
-Cannon = {tile = tileset.tile.cannon}
-Spikes = {tile = tileset.tile.spikes}
-Ice = {tile = tileset.tile.ice}
-FallAways = {tile = tileset.tile.fallaways}
-Accelerator = {tile = tileset.tile.accelerator}
-Glass = {tile = tileset.tile.glass}
+Block = {tile = tileset.tile.block, name = "Block"}
+Computer = {tile = tileset.tile.computer, name = "Block"}
+Bouncer = {tile = tileset.tile.bouncer, name = "Block"}
+OneWayDoor = {tile = tileset.tile.onewaydoor, name = "Block"}
+DirectionalDoor = {tile = tileset.tile.directionaldoor, name = "Block"}
+Cannon = {tile = tileset.tile.cannon, name = "Block"}
+Spikes = {tile = tileset.tile.spikes, name = "Block"}
+Ice = {tile = tileset.tile.ice, name = "Block"}
+FallAways = {tile = tileset.tile.fallaways, name = "Block"}
+Accelerator = {tile = tileset.tile.accelerator, name = "Block"}
+Glass = {tile = tileset.tile.glass, name = "Block"}
 
-Blackhole = {tile = tileset.tile.blackhole}
-Whitehole = {tile = tileset.tile.whitehole}
-Teleport = {tile = tileset.tile.teleport}
+Blackhole = {tile = tileset.tile.blackhole, name = "Block"}
+Whitehole = {tile = tileset.tile.whitehole, name = "Block"}
+Teleport = {tile = tileset.tile.teleport, name = "Block"}
 
 Block.on_collide = function() end
 Block.size = 24
@@ -105,9 +105,17 @@ end
 
 function Cannon.init(x,y)
     local new_cannon = Block.init(x, y)
+    new_cannon.my_r = 0
+    new_cannon.name = "Cannon"
 
-    new_cannon.fixture:setUserData("Cannon")
-    new_cannon.draw = function() drawTile(Cannon.tile, new_cannon) end
+    new_cannon.update = function(dt) 
+        if new_cannon.fixture.hit == true then
+            Statestack.push(CannonState(new_cannon))
+        end
+    end
+
+    new_cannon.fixture:setUserData(new_cannon)
+    new_cannon.draw = function() drawTile(Cannon.tile, new_cannon, new_cannon.my_r) end
 
     return new_cannon
 end
@@ -162,9 +170,9 @@ function Whitehole.init(x, y)
 
     new_whitehole.update = function(dt)
         local distance = math.sqrt((Player.my_x+12 - new_whitehole.center.x)^2+(Player.my_y+12 - new_whitehole.center.y)^2)
-   
+
         if distance <= Blackhole.pull then Player.body:applyLinearImpulse((Player.my_x - new_whitehole.center.x), (Player.my_y - new_whitehole.center.y)) end
-        if distance <= Blackhole.kill then Player.die() end
+        if distance <= Blackhole.kill then Player.killMe = true end
     end
 
     new_whitehole.draw = function() drawBH(Whitehole.tile, new_whitehole) end

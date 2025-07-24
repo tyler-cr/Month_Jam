@@ -27,8 +27,13 @@ function beginContact(a, b, coll)
         if isPlayerA and ny < -.5 or ny > 0.5 then Player.body:applyLinearImpulse(0, newVy) 
             Player.grounded = false
         end
-    end
 
+    elseif Physics.collidedObjects(a, b, "Player", "Spikes") then
+        Player.killMe = true
+
+    elseif a.name == "Cannon" or b.name == "cannon" then
+        print("boom?")
+    end
 
 end
 

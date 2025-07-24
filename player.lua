@@ -9,6 +9,9 @@ end
 Player = {
     drawMe = true,
 
+    my_r = 0,
+    my_restitution = .4,
+
     my_y = Grid.floor,
     my_x = Grid.center.x,
     my_dy = 0,
@@ -33,6 +36,7 @@ Player = {
 
 Physics.createRectangle(Player, "dynamic")
 Player.fixture:setUserData("Player")
+Player.fixture:setRestitution(Player.my_restitution)
 
 Player.dx.max.walk = 210
 Player.dy.max.jump = 500
@@ -42,8 +46,11 @@ Player.dx.walljump = 500
 Player.dx.walk = 5
 Player.dx.stall = 25
 Player.gravity = 2
+Player.killMe = false
 
 function Player.update(dt)
+    if Player.killMe then Player.die() end
+
     if Player.my_y < Player.highest then Player.highest =  Player.my_y end
 
     if Player.my_y >= Grid.floor then Player.grounded = true end
@@ -52,12 +59,17 @@ function Player.update(dt)
 end
 
 function Player.draw()
-    drawTile(tileset.tile.player_active, Player)
+    drawTile(tileset.tile.player_active, Player, Player.my_r)
 end
 
 function Player.handlemovement(dt)
     Player.my_dx = 0
     Player.my_dy = 0
+
+    local testVeloX, testVeloY = Player.body:getLinearVelocity()
+    testVeloX = testVeloX/40
+
+    Player.my_r = Player.my_r + dt*testVeloX
 
     if love.keyboard.isDown("left") then
         Player.my_dx = -Player.dx.walk
@@ -153,4 +165,6 @@ function Player.die()
 
     Player.body:setLinearVelocity(0,0)
     Player.body:setPosition(Player.my_x, Player.my_y)
+
+    Player.killMe = false
 end

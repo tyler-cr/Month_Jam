@@ -5,13 +5,11 @@ require("gameboard")
 require("player")
 require("graphics")
 require("tiles")
+require("states/cannonstate")
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
-local fps = 0
 -- TESTING AREA BEGIN
 local curFastestX, curFastestY = 0,0
-
-local mouse_x, mouse_y = love.mouse.getPosition()
 
 -- TESTING AREA END
 
@@ -52,6 +50,7 @@ end
 
 function love.draw()
     love.graphics.setColor(1,1,1)
-    Statestack.draw()
+    love.graphics.rectangle("fill", 0,0,800, 600)
     
+    Statestack.draw()
 end

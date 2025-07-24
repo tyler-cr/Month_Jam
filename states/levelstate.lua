@@ -1,9 +1,10 @@
 Level = {}
 
 function Level.init()
-    local test = Blackhole.init(200,Grid.floor)
+    local test = Cannon.init(Grid.leftwall+64,Grid.center.y)
+    local test1 = Blackhole.init(Grid.rightwall-64,Grid.center.y)
 
-    Level.objects = {Player, test}
+    Level.objects = {Player, test, test1}
 end
 
 local fixed_dt = 1/60
