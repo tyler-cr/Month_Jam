@@ -17,7 +17,7 @@ Computer = {tile = tileset.tile.computer, name = "Block"}
 Bouncer = {tile = tileset.tile.bouncer, name = "Block"}
 OneWayDoor = {tile = tileset.tile.onewaydoor, name = "Block"}
 DirectionalDoor = {tile = tileset.tile.directionaldoor, name = "Block"}
-Cannon = {tile = tileset.tile.cannon, name = "Block"}
+Cannon = {tile = tileset.tile.cannon, name = "Block", shoot = 500}
 Spikes = {tile = tileset.tile.spikes, name = "Block"}
 Ice = {tile = tileset.tile.ice, name = "Block"}
 FallAways = {tile = tileset.tile.fallaways, name = "Block"}
@@ -31,6 +31,7 @@ Teleport = {tile = tileset.tile.teleport, name = "Block"}
 Block.on_collide = function() end
 Block.size = 24
 Block.solid = true
+Block.starting_rotation = 0
 
 -- class wide functions
 Tile = {}
@@ -48,13 +49,15 @@ function Block.init(x, y)
         drawMe = true,
         my_x = x,
         my_y = y,
+        my_r = Block.starting_rotation,
         size = Block.size,
         solid = Block.solid,
         collision_box = {x = x, y = y, width = Block.size},
     }
 
+    new_block.name = "Block"
     Physics.createRectangle(new_block)
-    new_block.fixture:setUserData("Block")
+    new_block.fixture:setUserData(new_block)
 
     new_block.update = function(dt) if new_block.body:isDestroyed() then new_block.drawMe = false end end
 
@@ -66,7 +69,8 @@ end
 function Computer.init(x, y)
     local new_computer = Block.init(x, y)
 
-    new_computer.fixture:setUserData("Computer")
+    new_computer.name = "Computer"
+    new_computer.fixture:setUserData(new_computer)
 
     new_computer.draw = function() drawTile(Computer.tile, new_computer) end
 
@@ -76,7 +80,9 @@ end
 function Bouncer.init(x, y)
     local new_bouncer = Block.init(x, y)
 
-    new_bouncer.fixture:setUserData("Bouncer")
+    new_bouncer.name = "Bouncer"
+
+    new_bouncer.fixture:setUserData(new_bouncer)
 
     new_bouncer.draw = function() drawTile(Bouncer.tile, new_bouncer) end
 
@@ -86,7 +92,9 @@ end
 function OneWayDoor.init(x, y)
     local new_onewaydoor = Block.init(x, y)
 
-    new_onewaydoor.fixture:setUserData("OneWayDoor")
+    new_onewaydoor.name = "OneWayDoor"
+
+    new_onewaydoor.fixture:setUserData(new_onewaydoor)
 
     new_onewaydoor.draw = function() drawTile(OneWayDoor.tile, new_onewaydoor) end
 
@@ -96,7 +104,9 @@ end
 function DirectionalDoor.init(x, y)
     local new_directionaldoor = Block.init(x, y)
 
-    new_directionaldoor.fixture:setUserData("DirectionalDoor")
+    new_directionaldoor.name = "DirectionalDoor"
+
+    new_directionaldoor.fixture:setUserData(new_directionaldoor)
 
     new_directionaldoor.draw = function() drawTile(DirectionalDoor.tile, new_directionaldoor) end
 
@@ -123,7 +133,9 @@ end
 function Teleport.init(x,y)
     local new_teleporter = Block.init(x, y)
 
-    new_teleporter.fixture:setUserData("Teleport")
+    new_teleporter.name = "Teleport"
+
+    new_teleporter.fixture:setUserData(new_teleporter)
     new_teleporter.draw = function () drawTile(Teleport.tile[1], new_teleporter) end
     new_teleporter.connect = function() end    --gives one-way portal to go to when collided with. TODO
 
@@ -133,7 +145,9 @@ end
 function Spikes.init(x, y)
     local new_spikes = Bouncer.init(x, y)
 
-    new_spikes.fixture:setUserData("Spikes")
+    new_spikes.name = "Spikes"
+
+    new_spikes.fixture:setUserData(new_spikes)
 
     new_spikes.draw = function() drawTile(Spikes.tile, new_spikes) end
 
@@ -148,8 +162,9 @@ function Blackhole.init(x, y)
     new_blackhole.center.x = new_blackhole.my_x+12
     new_blackhole.center.y = new_blackhole.my_y+12
 
+    new_blackhole.name = "Blackhole"
 
-    new_blackhole.fixture:setUserData("Blackhole")
+    new_blackhole.fixture:setUserData(new_blackhole)
 
     new_blackhole.update = function(dt)
         local distance = math.sqrt((Player.my_x - new_blackhole.center.x)^2+(Player.my_y - new_blackhole.center.y)^2)
@@ -166,7 +181,9 @@ end
 function Whitehole.init(x, y)
     local new_whitehole = Blackhole.init(x, y)
 
-    new_whitehole.fixture:setUserData("Whitehole")
+    new_whitehole.name = "Whitehole"
+
+    new_whitehole.fixture:setUserData(new_whitehole)
 
     new_whitehole.update = function(dt)
         local distance = math.sqrt((Player.my_x+12 - new_whitehole.center.x)^2+(Player.my_y+12 - new_whitehole.center.y)^2)
@@ -183,7 +200,9 @@ end
 function Ice.init(x, y)
     local new_ice = Bouncer.init(x, y)
 
-    new_ice.fixture:setUserData("Ice")
+    new_ice.name = "Ice"
+
+    new_ice.fixture:setUserData(new_ice)
     new_ice.draw = function() drawTile(Ice.tile, new_ice) end
 
     return new_ice
@@ -192,7 +211,9 @@ end
 function FallAways.init(x, y)
     local new_fallaway = Bouncer.init(x, y)
 
-    new_fallaway.fixture:setUserData("FallAways")
+    new_fallaway.name = "FallAways"
+
+    new_fallaway.fixture:setUserData(new_fallaway)
     new_fallaway.draw = function() drawTile(FallAways.tile, new_fallaway) end
 
     return new_fallaway
@@ -201,7 +222,9 @@ end
 function Accelerator.init(x, y)
     local new_accelerator = Ice.init(x, y)
 
-    new_accelerator.fixture:setUserData("Accelerator")
+    new_accelerator.name = "Accelerator"
+
+    new_accelerator.fixture:setUserData(new_accelerator)
     new_accelerator.draw = function() drawTile(Accelerator.tile, new_accelerator) end
 
     return new_accelerator
@@ -210,7 +233,9 @@ end
 function Glass.init(x, y)
     local new_glass = Block.init(x, y)
 
-    new_glass.fixture:setUserData("Glass")
+    new_glass.name = "Glass"
+
+    new_glass.fixture:setUserData(new_glass)
     new_glass.draw = function() drawTile(Glass.tile, new_glass) end
 
     return new_glass

@@ -7,9 +7,12 @@ function beginContact(a, b, coll)
     local dataB = b:getUserData()
     local nx, ny = coll:getNormal()
 
+    local player    = dataA.name == "Player" and dataA or dataB
+    local nonplayer = dataA.name == "Player" and dataB or dataA
+
     local isPlayerA = dataA == "Player"
 
-    if isPlayerA and ny < -.5 and (dataA ~= "Wall" or dataB ~= "Wall") then Player.grounded = true
+    if isPlayerA and ny < -.5 and (dataA.name ~= "Wall" or dataB.name ~= "Wall") then Player.grounded = true
     elseif ny > 0.5 then Player.grounded = true end
 
     if Physics.collidedObjects(a, b, "Player", "Glass") then
@@ -31,8 +34,9 @@ function beginContact(a, b, coll)
     elseif Physics.collidedObjects(a, b, "Player", "Spikes") then
         Player.killMe = true
 
-    elseif a.name == "Cannon" or b.name == "cannon" then
-        print("boom?")
+    elseif Physics.collidedObjects(a, b, "Player", "Cannon") then
+        CannonState.cannon = nonplayer
+        Statestack.push(CannonState)
     end
 
 end
@@ -68,6 +72,9 @@ function preSolve(a, b, coll)
 end
 
 function postSolve(a, b, coll)
+    if Physics.collidedObjects(a, b, "Player", "Cannon") then
+        coll:setEnabled(false)
+    end
 end
 
 
@@ -90,9 +97,9 @@ function Physics.glassCollision(nx, ny, glass)
 end
 
 function Physics.collidedObjects(a, b, string1, string2)
-    local aString, bString = a:getUserData(), b:getUserData()
+    local dataA, dataB = a:getUserData(), b:getUserData()
 
-    return (aString == string1 and bString == string2) or (aString == string2 and bString == string1)
+    return (dataA.name == string1 and dataB.name == string2) or (dataA.name == string2 and dataB.name == string1)
 end
 
 function Physics.createRectangle(obj, type, width, height)

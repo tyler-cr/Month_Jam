@@ -7,6 +7,9 @@ function math.Clamp(val, lower, upper)
 end
 
 Player = {
+
+    name = "Player",
+
     drawMe = true,
 
     my_r = 0,
@@ -35,7 +38,7 @@ Player = {
 }
 
 Physics.createRectangle(Player, "dynamic")
-Player.fixture:setUserData("Player")
+Player.fixture:setUserData(Player)
 Player.fixture:setRestitution(Player.my_restitution)
 
 Player.dx.max.walk = 210
