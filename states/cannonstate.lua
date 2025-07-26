@@ -1,11 +1,11 @@
+---@diagnostic disable: undefined-field
 require("timer")
 
 CannonState = {cannon =  nil}
 
 function CannonState.init()
-    
-    print("HISS")
-    Player.drawMe = false
+
+    -- Player.drawMe = false
 
     impulse = {x = 1, y = 1}
 
@@ -13,28 +13,22 @@ function CannonState.init()
 
     timers = {}
 
-    test = Timer.create(1, function ()
-        print("start")
-    end, function ()
-        print("finish")
-    end)
-
-    Timer.addToTable(timers, test)
 end
 
 function CannonState.update(dt)
 
-    Timer.timekeeper(timers)
-
     radians = -1 * CannonState.cannon.my_r
     CannonState.updateImpulse()
+    CannonState.updatePlayer()
 
     if love.keyboard.isDown("left") then 
         CannonState.cannon.my_r = CannonState.cannon.my_r - dt
+        Player.my_r = Player.my_r - dt
     end
 
     if love.keyboard.isDown("right") then 
         CannonState.cannon.my_r = CannonState.cannon.my_r + dt
+        Player.my_r = Player.my_r + dt
     end
 
     if keyPressed("x") then 
@@ -48,8 +42,10 @@ function CannonState.shoot()
     Player.drawMe = true
 end
 
-function CannonState.afterShoot()
-
+function CannonState.updatePlayer()
+    Player.my_x = CannonState.cannon.my_x + math.cos(radians)*Block.size*1.1
+    Player.my_y = CannonState.cannon.my_y - math.sin(radians)*Block.size*1.1
+    Physics.setPosn(Player)
 end
 
 function CannonState.updateImpulse()

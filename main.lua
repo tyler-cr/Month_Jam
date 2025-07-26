@@ -6,6 +6,7 @@ require("player")
 require("graphics")
 require("tiles")
 require("states/cannonstate")
+require("timer")
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
 -- TESTING AREA BEGIN
@@ -32,6 +33,8 @@ function keyPressed(key)
 end
 
 function love.update(dt)
+
+    Timer.timekeeper()
 
     local curVX, curVY = Player.body:getLinearVelocity()
 

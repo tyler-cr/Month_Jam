@@ -37,9 +37,9 @@ Player = {
     grounded = false
 }
 
-Physics.createRectangle(Player, "dynamic")
+Physics.createRectangle(Player, "dynamic", Block.size,Block.size)
 Player.fixture:setUserData(Player)
-Player.fixture:setRestitution(Player.my_restitution)
+Player.fixture:setRestitution(0)
 
 Player.dx.max.walk = 210
 Player.dy.max.jump = 500
@@ -50,9 +50,14 @@ Player.dx.walk = 5
 Player.dx.stall = 25
 Player.gravity = 2
 Player.killMe = false
+Player.teleport = false
 
 function Player.update(dt)
     if Player.killMe then Player.die() end
+    if Player.teleport then 
+        Physics.setPosn(Player)
+        Player.teleport = false 
+    end
 
     if Player.my_y < Player.highest then Player.highest =  Player.my_y end
 

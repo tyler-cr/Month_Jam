@@ -72,12 +72,20 @@ tileset.tile.whitehole = {top = {quadtable[15], quadtable[16], quadtable[17]}, m
 tileset.scale = 3
 tileset.rotation.default = 0
 
+function drawPlayer(tile, new_tile, r)
 
+    if r == nil then r = tileset.rotation.default end
+
+    -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, 12, 12)
+    -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, -12, 12)
+    -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, -120, 0)
+    love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, 1, 1, 12, 12)
+end
 
 function drawTile(tile, new_tile, r)
 
     if r == nil then r = tileset.rotation.default end
-    
+
     -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, 12, 12)
     -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, -12, 12)
     -- love.graphics.draw(Tileset, tile, new_tile.my_x, new_tile.my_y, r, tileset.scale, tileset.scale, -120, 0)

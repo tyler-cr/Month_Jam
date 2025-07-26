@@ -1,26 +1,29 @@
 Timer = {}
 
+Timer.table = {}
+
 function Timer.create(duration, startFunction, endFunction)
     startFunction()
     local startTime = os.clock()
-    return function()
+
+    Timer.addToTable(function()
         if os.clock() - startTime >= duration then
             endFunction()
             return true
         end
         return false
-    end
+    end)
 end
 
-function Timer.addToTable(list, timer)
-    table.insert(list, timer)
+function Timer.addToTable(timer)
+    table.insert(Timer.table, timer)
 end
 
-function Timer.timekeeper(timeTable)
-    for i = #timeTable, 1, -1 do
-        local timerRef = timeTable[i]
+function Timer.timekeeper()
+    for i = #Timer.table, 1, -1 do
+        local timerRef = Timer.table[i]
         if timerRef and timerRef() then
-            table.remove(timeTable, i)
+            table.remove(Timer.table, i)
         end
     end
 end

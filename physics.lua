@@ -16,8 +16,7 @@ function beginContact(a, b, coll)
     elseif ny > 0.5 then Player.grounded = true end
 
     if Physics.collidedObjects(a, b, "Player", "Glass") then
-        local glass = a:getUserData() == "Glass" and a or b
-        Physics.glassCollision(nx, ny, glass)
+        Physics.glassCollision(nx, ny, nonplayer)
 
     elseif Physics.collidedObjects(a, b, "Player", "Computer") then
         print("LEVEL COMPLETE!!!")
@@ -37,15 +36,45 @@ function beginContact(a, b, coll)
     elseif Physics.collidedObjects(a, b, "Player", "Cannon") then
         CannonState.cannon = nonplayer
         Statestack.push(CannonState)
+
+    elseif Physics.collidedObjects(a, b, "Player", "Teleport") and nonplayer.collided == false and nonplayer.connectedTo then
+        Player.teleport = true
+        Player.my_x = nonplayer.connectedTo.my_x
+        Player.my_y = nonplayer.connectedTo.my_y
+
+        Timer.create(.5, function ()
+            nonplayer.connectedTo.collided = true
+        end, function ()
+            nonplayer.connectedTo.collided = false
+        end)
+
+    elseif Physics.collidedObjects(a, b, "Player", "Accelerator") then
+        
+        Player.body:applyLinearImpulse(100,0)
     end
 
 end
 
 function endContact(a, b, coll)
 
+    local dataA = a:getUserData()
+    local dataB = b:getUserData()
+
+    local vx, _ = Player.body:getLinearVelocity()
+    local player = dataA.name == "Player" and dataA or dataB
+    local other = dataA.name == "Player" and dataB or dataA
+
     if Physics.collidedObjects(a, b, "Player", "Block") then
         Player.grounded = false
+
+    elseif Physics.collidedObjects(a, b, "Player", "FallAways") and other.collided == false then
+        other.collided = true
+        Timer.create(.3, function ()
+        end, function ()
+                other.body:destroy()
+        end)
     end
+
 end
 
 function preSolve(a, b, coll)
@@ -56,6 +85,10 @@ function preSolve(a, b, coll)
  
     local player = dataA == "Player" and dataA or dataB
     local other = dataA == "Player" and dataB or dataA
+
+    if Physics.collidedObjects(a, b, "Player", "Teleport") then
+        coll:setEnabled(false)
+    end
 
     if Physics.collidedObjects(a, b, "Player", "Blackhole") then
         coll:setEnabled(false)
@@ -88,11 +121,15 @@ function Physics.getProjectedImpactSpeed(vxA, vyA, nx, ny)
     return math.abs(vB)
 end
 
+function Physics.fallaway(fallaway)
+    fallaway.body:destroy()
+end
+
 function Physics.glassCollision(nx, ny, glass)
     local vx, vy = Player.body:getLinearVelocity()
 
     if Physics.getProjectedImpactSpeed(vx, vy, nx, ny) > 300 then
-        glass:getBody():destroy()
+        glass.body:destroy()
     end
 end
 
@@ -115,18 +152,16 @@ function Physics.createRectangle(obj, type, width, height)
 
 end
 
-function Physics.addRectangle(obj, xOffset, yOffset, width, height)
-    obj.shape2 = love.physics.newRectangleShape(width/2+xOffset, height/2-yOffset, width, height)
-    obj.fixture2  = love.physics.newFixture(obj.body, obj.shape2)
-end
 
-function Physics.createCircle(obj, type, radius)
-    new_radius = radius or Block.size
+function Physics.createCircle(obj, radius, type)
+    new_radius = radius or Block.size/2
+    new_type = type or "dynamic"
 
     obj.body     = love.physics.newBody(world, obj.my_x, obj.my_y, type)
-    obj.shape    = love.physics.newCircleShape(new_radius/2, new_radius/2, new_radius)
+    obj.shape    = love.physics.newCircleShape(new_radius)
     obj.fixture  = love.physics.newFixture(obj.body, obj.shape)
     obj.body:setFixedRotation(true)
+
 end
 
 function Physics.setPosn(obj)

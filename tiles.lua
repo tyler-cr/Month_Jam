@@ -55,6 +55,8 @@ function Block.init(x, y)
         collision_box = {x = x, y = y, width = Block.size},
     }
 
+    new_block.collided = false
+
     new_block.name = "Block"
     Physics.createRectangle(new_block)
     new_block.fixture:setUserData(new_block)
@@ -134,10 +136,14 @@ function Teleport.init(x,y)
     local new_teleporter = Block.init(x, y)
 
     new_teleporter.name = "Teleport"
+    new_teleporter.connectedTo = nil
 
     new_teleporter.fixture:setUserData(new_teleporter)
     new_teleporter.draw = function () drawTile(Teleport.tile[1], new_teleporter) end
-    new_teleporter.connect = function() end    --gives one-way portal to go to when collided with. TODO
+    new_teleporter.connect = function(other_teleport) 
+        new_teleporter.connectedTo = other_teleport
+        if other_teleport.connectedTo == nil then other_teleport.connectedTo = new_teleporter end
+    end    --gives one-way portal to go to when collided with. TODO
 
     return new_teleporter
 end
@@ -203,6 +209,8 @@ function Ice.init(x, y)
     new_ice.name = "Ice"
 
     new_ice.fixture:setUserData(new_ice)
+    new_ice.fixture:setFriction(0.0)
+
     new_ice.draw = function() drawTile(Ice.tile, new_ice) end
 
     return new_ice
