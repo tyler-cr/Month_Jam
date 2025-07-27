@@ -13,12 +13,6 @@ function beginContact(a, b, coll)
 
     local isPlayerA = dataA == "Player"
 
-    local player_x, player_y = player.body:getPosition()
-    local nonplayer_x, nonplayer_y = nonplayer.body:getPosition()
-
-    if player_y < nonplayer_y then Player.grounded = true
-    else Player.grounded = false end
-
     if Physics.collidedObjects(a, b, "Player", "Glass") then
         Physics.glassCollision(nx, ny, nonplayer)
 
@@ -65,6 +59,8 @@ function endContact(a, b, coll)
     local player = dataA.name == "Player" and dataA or dataB
     local other = dataA.name == "Player" and dataB or dataA
 
+    Player.grounded = false
+
 
     if Physics.collidedObjects(a, b, "Player", "FallAways") and other.collided == false then
         other.collided = true
@@ -84,6 +80,15 @@ function preSolve(a, b, coll)
  
     local player = dataA == "Player" and dataA or dataB
     local other = dataA == "Player" and dataB or dataA
+
+    local player    = dataA.name == "Player" and dataA or dataB
+    local nonplayer = dataA.name == "Player" and dataB or dataA
+
+    local player_x, player_y = player.body:getPosition()
+    local nonplayer_x, nonplayer_y = nonplayer.body:getPosition()
+
+    if player_y < nonplayer_y then Player.grounded = true
+    else Player.grounded = false end
 
     if Physics.collidedObjects(a, b, "Player", "Accelerator") then
         Player.body:applyLinearImpulse(10,0)

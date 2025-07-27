@@ -5,7 +5,7 @@ CannonState = {cannon =  nil}
 
 function CannonState.init()
 
-    -- Player.drawMe = false
+    Player.drawMe = false
 
     impulse = {x = 1, y = 1}
 
@@ -54,7 +54,7 @@ function CannonState.updateImpulse()
 
     if math.abs(radians) >= 2 * math.pi then CannonState.cannon.my_r = 0 end
 
-    impulse.y = -math.tan(radians) / impulse.x
+    impulse.y = math.abs(-math.tan(radians) / impulse.x) > 4 and 2 or -math.tan(radians) / impulse.x
 
 end
 

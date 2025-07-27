@@ -60,9 +60,7 @@ function Player.update(dt)
         Player.teleport = false
     end
 
-    if Player.my_y >= Grid.floor then Player.grounded = true
-    
-    end
+    if Player.my_y >= Grid.floor then Player.grounded = false end
 
     Player.handlemovement(dt)
 
