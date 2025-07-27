@@ -3,6 +3,7 @@ world  = love.physics.newWorld(0, 900)
 flipped = false
 
 function beginContact(a, b, coll)
+
     local dataA = a:getUserData()
     local dataB = b:getUserData()
     local nx, ny = coll:getNormal()
@@ -12,8 +13,11 @@ function beginContact(a, b, coll)
 
     local isPlayerA = dataA == "Player"
 
-    if isPlayerA and ny < -.5 and (dataA.name ~= "Wall" or dataB.name ~= "Wall") then Player.grounded = true
-    elseif ny > 0.5 then Player.grounded = true end
+    local player_x, player_y = player.body:getPosition()
+    local nonplayer_x, nonplayer_y = nonplayer.body:getPosition()
+
+    if player_y < nonplayer_y then Player.grounded = true
+    else Player.grounded = false end
 
     if Physics.collidedObjects(a, b, "Player", "Glass") then
         Physics.glassCollision(nx, ny, nonplayer)
@@ -48,9 +52,6 @@ function beginContact(a, b, coll)
             nonplayer.connectedTo.collided = false
         end)
 
-    elseif Physics.collidedObjects(a, b, "Player", "Accelerator") then
-        
-        Player.body:applyLinearImpulse(100,0)
     end
 
 end
@@ -64,10 +65,8 @@ function endContact(a, b, coll)
     local player = dataA.name == "Player" and dataA or dataB
     local other = dataA.name == "Player" and dataB or dataA
 
-    if Physics.collidedObjects(a, b, "Player", "Block") then
-        Player.grounded = false
 
-    elseif Physics.collidedObjects(a, b, "Player", "FallAways") and other.collided == false then
+    if Physics.collidedObjects(a, b, "Player", "FallAways") and other.collided == false then
         other.collided = true
         Timer.create(.3, function ()
         end, function ()
@@ -86,11 +85,19 @@ function preSolve(a, b, coll)
     local player = dataA == "Player" and dataA or dataB
     local other = dataA == "Player" and dataB or dataA
 
+    if Physics.collidedObjects(a, b, "Player", "Accelerator") then
+        Player.body:applyLinearImpulse(10,0)
+    end
+
     if Physics.collidedObjects(a, b, "Player", "Teleport") then
         coll:setEnabled(false)
     end
 
     if Physics.collidedObjects(a, b, "Player", "Blackhole") then
+        coll:setEnabled(false)
+    end
+
+    if Physics.collidedObjects(a, b, "Player", "Whitehole") then
         coll:setEnabled(false)
     end
 

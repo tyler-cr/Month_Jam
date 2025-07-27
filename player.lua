@@ -53,17 +53,19 @@ Player.killMe = false
 Player.teleport = false
 
 function Player.update(dt)
+
     if Player.killMe then Player.die() end
     if Player.teleport then 
         Physics.setPosn(Player)
-        Player.teleport = false 
+        Player.teleport = false
     end
 
-    if Player.my_y < Player.highest then Player.highest =  Player.my_y end
-
-    if Player.my_y >= Grid.floor then Player.grounded = true end
+    if Player.my_y >= Grid.floor then Player.grounded = true
+    
+    end
 
     Player.handlemovement(dt)
+
 end
 
 function Player.draw()
@@ -87,6 +89,7 @@ function Player.handlemovement(dt)
 
     if keyPressed("up") and Player.grounded then
         Player.my_dy = Player.dy.jump
+        Player.grounded = false
     end
 
     Player.body:applyLinearImpulse(Player.my_dx, Player.my_dy)
@@ -164,7 +167,6 @@ function Player.flipYaxis()
     Physics.flipYaxis(Player)
 end
 
---todo: when player collides with certain blocks, will reset level
 function Player.die()
     Player.my_dx = 0
     Player.my_dy = 0

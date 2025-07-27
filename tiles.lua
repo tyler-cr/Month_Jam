@@ -194,8 +194,7 @@ function Whitehole.init(x, y)
     new_whitehole.update = function(dt)
         local distance = math.sqrt((Player.my_x+12 - new_whitehole.center.x)^2+(Player.my_y+12 - new_whitehole.center.y)^2)
 
-        if distance <= Blackhole.pull then Player.body:applyLinearImpulse((Player.my_x - new_whitehole.center.x), (Player.my_y - new_whitehole.center.y)) end
-        if distance <= Blackhole.kill then Player.killMe = true end
+        if distance <= Blackhole.pull then Player.body:applyLinearImpulse(3*(Player.my_x - new_whitehole.center.x), 3*(Player.my_y - new_whitehole.center.y)) end
     end
 
     new_whitehole.draw = function() drawBH(Whitehole.tile, new_whitehole) end
@@ -248,4 +247,3 @@ function Glass.init(x, y)
 
     return new_glass
 end
-
