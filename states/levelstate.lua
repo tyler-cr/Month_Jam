@@ -4,26 +4,26 @@ function Level.init()
 
     Level.objects = {Player}
 
+    --testing out blocks 
     for i = 0, 5 do
         if i%2 == 0 then 
-            local test = Whitehole.init(Grid.leftwall+80*i+24, Grid.center.y)
+            local test = Glass.init(Grid.leftwall+80*i+24, Grid.center.y)
             table.insert(Level.objects, test)
         else
-            local test = Blackhole.init(Grid.leftwall+80*i+24, Grid.center.y)
+            local test = Glass.init(Grid.leftwall+80*i+24, Grid.center.y)
             table.insert(Level.objects, test)
         end
 
     end
-
     local test = Cannon.init(Grid.leftwall+64, Grid.floor)
     table.insert(Level.objects, test)
 
 end
 
+--fixed_dt for physics to be more accurate
 local fixed_dt = 1/60
 local accumulator = 0
 
--- maybe remove the fixed_dt
 function Level.update(dt)
 
     accumulator = accumulator + dt
@@ -33,16 +33,15 @@ function Level.update(dt)
         accumulator = accumulator - fixed_dt
     end
 
-    for _, val in pairs(Level.objects) do
+    for i, val in pairs(Level.objects) do
+        if val.body:isDestroyed() then table.remove(Level.objects, i) end
         val.update(dt)
     end
-
-    Grid.update(dt)
 
 end
 
 function Level.draw()
-    
+
     for i = #Level.objects, 1, -1 do
         local val = Level.objects[i]
         if val.drawMe then val.draw() end

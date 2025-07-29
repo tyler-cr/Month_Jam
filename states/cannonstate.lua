@@ -5,19 +5,19 @@ CannonState = {cannon =  nil}
 
 function CannonState.init()
 
-    Player.drawMe = false
+    --Player.drawMe = false
 
-    impulse = {x = 1, y = 1}
-
+    --starter values
+    impulse = {x = 0, y = 0}
     radians = 0
-
-    timers = {}
 
 end
 
 function CannonState.update(dt)
 
-    radians = -1 * CannonState.cannon.my_r
+    -- my_r rotation is clockwise, but angles are handles counterclockwise
+    radians = -CannonState.cannon.my_r
+
     CannonState.updateImpulse()
     CannonState.updatePlayer()
 
@@ -31,36 +31,34 @@ function CannonState.update(dt)
         Player.my_r = Player.my_r + dt
     end
 
-    if keyPressed("x") then 
+    if keyPressed("x") then
         CannonState.shoot()
     end
 end
 
 function CannonState.shoot()
-    Player.body:applyLinearImpulse(impulse.x*Cannon.shoot,impulse.y*Cannon.shoot)
+    Player.body:applyLinearImpulse(impulse.x*Cannon.shoot, impulse.y*Cannon.shoot)
     Statestack.pop()
     Player.drawMe = true
 end
 
 function CannonState.updatePlayer()
-    Player.my_x = CannonState.cannon.my_x + math.cos(radians)*Block.size*1.1
-    Player.my_y = CannonState.cannon.my_y - math.sin(radians)*Block.size*1.1
+
+    Player.my_x = CannonState.cannon.my_x + math.cos(radians)*Block.size
+    Player.my_y = CannonState.cannon.my_y - math.sin(radians)*Block.size
+
     Physics.setPosn(Player)
 end
 
 function CannonState.updateImpulse()
-    if radians > math.pi/2 and radians < 3*math.pi / 2 or radians < -math.pi/2 and radians > -3 * math.pi / 2 then impulse.x = -1
-    else impulse.x = 1 end
 
-    if math.abs(radians) >= 2 * math.pi then CannonState.cannon.my_r = 0 end
-
-    impulse.y = math.abs(-math.tan(radians) / impulse.x) > 4 and 2 or -math.tan(radians) / impulse.x
+    impulse.x = math.cos(radians)
+    impulse.y = -math.sin(radians)
 
 end
 
 function CannonState.draw()
-    love.graphics.print(radians, 500, 0)
-    love.graphics.print(impulse.x .." : "..impulse.y, 500, 20)
+    love.graphics.print(math.floor(impulse.x).." : "..math.floor(impulse.y))
 end
 
 

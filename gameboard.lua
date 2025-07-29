@@ -1,20 +1,18 @@
 require("tiles")
 
 -- for functions
-Grid = {length = 480, width = 480}
+Grid = {length = 480, width = 480, midOffset = 240}
 
 Grid.center = {
     x = 400,
     y = 300
 }
 
-Grid.ceiling = Grid.center.y - 240
-Grid.floor = Grid.center.y + 240
-Grid.leftwall = Grid.center.x - 240
-Grid.rightwall = Grid.center.x + 240
+Grid.ceiling = Grid.center.y - Grid.midOffset
+Grid.floor = Grid.center.y + Grid.midOffset
+Grid.leftwall = Grid.center.x - Grid.midOffset
+Grid.rightwall = Grid.center.x + Grid.midOffset
 
-
-Grid.placementoffset = function(i) return (i-1) * Block.size end
 
 Grid.border = {top = {name = "Grid.border.top"}, bottom = {name = "Grid.border.bottom"},
                       left = {name = "Grid.border.left"}, right = {name = "Grid.border.right"}}
@@ -40,55 +38,4 @@ function Grid.createBorder()
     Grid.border.right.shape = love.physics.newRectangleShape(0, Grid.length/2, 1, Grid.length+24)
     Grid.border.right.fixture = love.physics.newFixture(Grid.border.right.body, Grid.border.right.shape)
     Grid.border.right.fixture:setUserData(Grid.border.right)
-end
-
-function distancebetweenpoints(x1, x2, y1, y2)
-    return math.sqrt((x2-x1)^2-(y2-y1)^2)
-end
-
-function slopebetweenpoints(x1, x2, y1, y2)
-    if x2 == x1 then return 999 end -- if the points x vals are the same, we have to prevent devide by zero
-    return (y2-y1)/(x2-x1)
-end
-
-function perpendicularslope(slope)
-    return -1/slope
-end
-
-function Grid.quadrant(x, y)
-    local xrel =  x - Grid.center.x
-    local yrel =  Grid.center.y - y
-
-    if      xrel > 0 and yrel > 0 then return "quad 1"
-    elseif  xrel < 0 and yrel > 0 then return "quad 2"
-    elseif  xrel < 0 and yrel < 0 then return "quad 3"
-    else                               return "quad 4" end
-
-end
-
-function Grid.update(dt)
-    Grid.handleMovement()
-end
-
-function Grid.handleMovement()
-    if      keyPressed("q") then Grid.rotate90()
-    elseif  keyPressed("e") then Grid.rotateneg90()
-    elseif  keyPressed("w") or keyPressed("s") then Grid.flipXaxis()
-    elseif  keyPressed("a") or keyPressed("d") then Grid.flipYaxis() end
-end
-
-function Grid.rotate90()
-    Player.rotate90()
-end
-
-function Grid.rotateneg90()
-    Player.rotateneg90()
-end
-
-function Grid.flipXaxis()
-    Player.flipXaxis()
-end
-
-function Grid.flipYaxis()
-    Player.flipYaxis()
 end

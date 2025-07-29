@@ -7,6 +7,9 @@ require("graphics")
 require("tiles")
 require("states/cannonstate")
 require("timer")
+require("mapmaker")
+
+readMap("test.txt")
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
 -- TESTING AREA BEGIN
@@ -52,8 +55,9 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.setColor(.2,.2,.2)
+    love.graphics.rectangle("fill", 0,0,800, 600)
     love.graphics.setColor(1,1,1)
-    -- love.graphics.rectangle("fill", 0,0,800, 600)
-    
+
     Statestack.draw()
 end

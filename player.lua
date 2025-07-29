@@ -39,7 +39,7 @@ Player = {
 
 Physics.createRectangle(Player, "dynamic", Block.size,Block.size)
 Player.fixture:setUserData(Player)
-Player.fixture:setRestitution(0)
+Player.fixture:setRestitution(Player.my_restitution )
 
 Player.dx.max.walk = 210
 Player.dy.max.jump = 500
@@ -63,6 +63,7 @@ function Player.update(dt)
     if Player.my_y >= Grid.floor then Player.grounded = false end
 
     Player.handlemovement(dt)
+    Player.handleRotAxis()
 
 end
 
@@ -127,6 +128,8 @@ function Player.rotate90()
     Physics.setPosn(Player)
     Physics.rotate90(Player)
 
+    Player.my_r = Player.my_r - math.pi/2
+
 end
 
 function Player.rotateneg90()
@@ -143,6 +146,8 @@ function Player.rotateneg90()
     Physics.setPosn(Player)
     Physics.rotateneg90(Player)
 
+    Player.my_r = Player.my_r + math.pi/2
+
 end
 
 function Player.flipXaxis()
@@ -154,6 +159,8 @@ function Player.flipXaxis()
     Physics.setPosn(Player)
     Physics.flipXaxis(Player)
 
+    Player.my_r = math.pi - Player.my_r
+
 end
 
 function Player.flipYaxis()
@@ -163,6 +170,9 @@ function Player.flipYaxis()
     Player.setcoordfromrelative()
     Physics.setPosn(Player)
     Physics.flipYaxis(Player)
+
+    Player.my_r = - Player.my_r
+    
 end
 
 function Player.die()
@@ -175,4 +185,11 @@ function Player.die()
     Player.body:setPosition(Player.my_x, Player.my_y)
 
     Player.killMe = false
+end
+
+function Player.handleRotAxis()
+    if      keyPressed("q") then Player.rotate90()
+    elseif  keyPressed("e") then Player.rotateneg90()
+    elseif  keyPressed("w") or keyPressed("s") then Player.flipXaxis()
+    elseif  keyPressed("a") or keyPressed("d") then Player.flipYaxis() end
 end
