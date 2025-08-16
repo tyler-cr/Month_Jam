@@ -20,6 +20,12 @@ function Level.init()
 
 end
 
+function Level.makeMap(mapTable)
+    for _, block in pairs(mapTable) do
+        
+    end
+end
+
 --fixed_dt for physics to be more accurate
 local fixed_dt = 1/60
 local accumulator = 0

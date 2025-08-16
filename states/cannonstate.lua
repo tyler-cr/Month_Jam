@@ -5,7 +5,8 @@ CannonState = {cannon =  nil}
 
 function CannonState.init()
 
-    --Player.drawMe = false
+    Player.drawMe = false
+    Player.body:setLinearVelocity(0,0)
 
     --starter values
     impulse = {x = 0, y = 0}
