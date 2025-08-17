@@ -1,29 +1,38 @@
+function TableConcat(t1,t2)
+    for i=1,#t2 do
+        t1[#t1+1] = t2[i]
+    end
+    return t1
+end
+
+require("mapmaker")
+
 Level = {}
 
 function Level.init()
 
     Level.objects = {Player}
 
-    --testing out blocks 
+        --testing out blocks 
     for i = 0, 5 do
         if i%2 == 0 then 
-            local test = Glass.init(Grid.leftwall+80*i+24, Grid.center.y)
+            local test = Blackhole.init(Grid.leftwall+80*i+24, Grid.center.y)
             table.insert(Level.objects, test)
         else
-            local test = Glass.init(Grid.leftwall+80*i+24, Grid.center.y)
+            local test = Whitehole.init(Grid.leftwall+80*i+24, Grid.center.y)
             table.insert(Level.objects, test)
         end
 
     end
+
+
+
+
+    Level.objects = TableConcat(Level.objects, MapMaker.generateTableFromPath("images/testlevel.png"))
+
     local test = Cannon.init(Grid.leftwall+64, Grid.floor)
     table.insert(Level.objects, test)
 
-end
-
-function Level.makeMap(mapTable)
-    for _, block in pairs(mapTable) do
-        
-    end
 end
 
 --fixed_dt for physics to be more accurate

@@ -9,7 +9,6 @@ require("states/cannonstate")
 require("timer")
 require("mapmaker")
 
-readMap("images/testlevel.png")
 
 love.graphics.setDefaultFilter('nearest', 'nearest')
 -- TESTING AREA BEGIN
