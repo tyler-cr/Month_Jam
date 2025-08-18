@@ -41,6 +41,11 @@ local accumulator = 0
 
 function Level.update(dt)
 
+    if love.keyboard.isDown("escape") then 
+        Statestack.pop()
+        Statestack.push(Start)
+     end
+
     accumulator = accumulator + dt
 
     while accumulator >= fixed_dt do

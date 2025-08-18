@@ -1,4 +1,5 @@
-Tileset = love.graphics.newImage('images/tileset.png')
+Tileset =       love.graphics.newImage('images/tileset.png')
+StartButtons =  love.graphics.newImage('images/startbuttons1.png')
 
 function GenerateQuads(atlas, tilewidth, tileheight)
     local sheetWidth = atlas:getWidth() / tilewidth
@@ -19,7 +20,11 @@ function GenerateQuads(atlas, tilewidth, tileheight)
     return spritesheet
 end
 
-local quadtable =  GenerateQuads(Tileset, 24, 24)
+local quadtable =  GenerateQuads(Tileset,       24, 24)
+local startQuad =  GenerateQuads(StartButtons,  128, 64)
+
+startButton1 = startQuad[1]
+startButton2 = startQuad[2]
 
 tileset = {tile = {}, rotation = {}, scale = {}}
 tileset.tile.block =             quadtable[1]

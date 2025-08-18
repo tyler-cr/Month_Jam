@@ -1,5 +1,7 @@
 require("statestack")
 require("states/levelstate")
+require("states/startstate")
+require("states/editorstate")
 require("physics")
 require("gameboard")
 require("player")
@@ -21,7 +23,7 @@ function love.load()
     love.window.setTitle('Game Test')
     math.randomseed(os.time())
     love.keyboard.keysPressed = {}
-    Statestack.push(Level)
+    Statestack.push(Start)
 end
 
 love.keyboard.keysPressed = {}
@@ -42,9 +44,6 @@ function love.update(dt)
 
     if math.abs(curVX) > math.abs(curFastestX) then curFastestX = math.abs(curVX) end
     if math.abs(curVY) > math.abs(curFastestY) then curFastestY = math.abs(curVY) end
-
-
-    if love.keyboard.isDown("escape") then love.event.quit() end
 
     Statestack.update(dt)
 
