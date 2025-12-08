@@ -20,9 +20,9 @@
   - [ ] Return to menu
 
 ## 🧠 Game Logic & Tile Features
-- [ ] ☠️ Spikes kill player
+- [X] ☠️ Spikes kill player
 - [ ] 🚪 Doors with conditional logic
-- [ ] 🌌 Blackholes/whiteholes with gravity pull
+- [X] 🌌 Blackholes/whiteholes with gravity pull
 - [ ] 🏁 Level complete check (touch tiles, reach goal)
 
 ## 🎨 Visuals & UX
