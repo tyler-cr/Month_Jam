@@ -70,3 +70,7 @@ function drawBH(type, new_tile)
     end
         love.graphics.draw(Tileset, type.bottom[1], middleX, middleY+Block.size, 0)
 end
+
+function drawTile_Editor(index, x, y)
+    love.graphics.draw(Tileset, quadtable[index], x, y)
+end

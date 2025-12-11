@@ -86,7 +86,3 @@ function MapMaker.generateBlockTable(blockData)
     end
     return retTable
 end
-
-
-
-

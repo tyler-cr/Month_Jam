@@ -15,6 +15,15 @@ function Timer.create(duration, startFunction, endFunction)
     end)
 end
 
+function Timer.simple(seconds)
+    local start = os.time()
+    return function()
+        if os.time() - start >= seconds then 
+            return true end --timer ended
+        return false --timer still going
+    end
+end
+
 function Timer.addToTable(timer)
     table.insert(Timer.table, timer)
 end

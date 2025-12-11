@@ -20,6 +20,7 @@ local curFastestX, curFastestY = 0,0
 
 function love.load()
     Grid.createBorder()
+    print("test")
     love.window.setTitle('Game Test')
     math.randomseed(os.time())
     love.keyboard.keysPressed = {}
