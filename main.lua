@@ -20,7 +20,6 @@ local curFastestX, curFastestY = 0,0
 
 function love.load()
     Grid.createBorder()
-    print("test")
     love.window.setTitle('Game Test')
     math.randomseed(os.time())
     love.keyboard.keysPressed = {}
@@ -30,6 +29,7 @@ end
 love.keyboard.keysPressed = {}
 
 function love.keypressed(key)
+    table.insert(love.keyboard.keysPressed, key)
     love.keyboard.keysPressed[key] = true
 end
 
@@ -37,7 +37,14 @@ function keyPressed(key)
     return love.keyboard.keysPressed[key]
 end
 
+function getKey() return love.keyboard.keysPressed[1] end
+function getKeys()return love.keyboard.keysPressed end
+
 function love.update(dt)
+    
+    if keyPressed("p") then 
+        print("why no work") 
+    end
 
     Timer.timekeeper()
 

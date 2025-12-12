@@ -1,0 +1,62 @@
+Action:                         |   Key:
+-------------------------------------------------- 
+Create:                         
+    block                       |   1
+    computer                    |   2
+    bouncer                     |   3
+    onewaydoor                  |   4
+    directionaldoor             |   5
+    opendoor                    |   6
+    cannon                      |   7
+    spikes                      |   8
+    ice                         |   9
+    fallaways                   |   0
+    accelerator                 |   -
+    glass                       |   =
+    blackhole                   |   shift+1
+    whitehole                   |   shift+2
+    teleport1                   |   shift+3
+    teleport2                   |   shift+4
+    teleport3                   |   shift+5
+--------------------------------------------------                            
+Handling Block:                     (block selected)
+    Rotate 90                   |   e
+    Rotate -90                  |   q
+    Flip x                      |   d/a
+    Flip y                      |   w/s
+    Connect teleporters (2 way) |   g, then select other
+    Connect teleporters (1 way) |   h, then select other
+    Disconnect teleporters      |   shift+g (deleted both directions) 
+    Disconnect teleporters      |   shift+h (deleted one direction)
+--------------------------------------------------
+Handling Map:
+    Set rules:                  |   shift+r
+    Rotate 90                   |   shift+e
+    Rotate -90                  |   shift+q
+    Flip x, no otherside        |   shift+d/a
+    Flip y, no otherside        |   shift+w/s
+    Go to otherside             |   x
+    Go to otherside, flip x     |   alt+a/d
+    Go to otherside, flip y     |   alt+w/s
+--------------------------------------------------
+Drop:
+    Drop with placing           |   m.left
+    Drop without placing        |   m.right
+    Drop with placing and copy  |   shift+m.left
+--------------------------------------------------
+Copy:                               (no block selected)
+    Copy placed block           |   c (while over block)
+--------------------------------------------------
+Select / Remove:                    (while over block)
+    Select placed block         |   m.left / return
+    Remove block                |   v 
+--------------------------------------------------
+Editor Controls:
+    Save map                    |   cmd+s
+    Load map                    |   cmd+l
+--------------------------------------------------
+Grid Arrow Controls:
+    Move right                  | right Arrow
+    Move left                   | left Arrow
+    Move up                     | up Arrow
+    Move down                   | down Arrow
