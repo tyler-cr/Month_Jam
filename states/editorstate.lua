@@ -10,6 +10,7 @@ local   mouseCircleSize = {default = 7, click = 5}
 
 function Editor.init()
     mouseSelected = nil
+    Editor.currentHover = nil
     clickTimer = Timer.simple(0) --init as timer so we don't have nil issues
 
     mouseCircleSize.current = 7
@@ -40,6 +41,7 @@ function Editor.init()
 end
 
 function Editor.update(dt)
+    Editor.currentHover = Editor.getCurrentHover()
 
     Editor.handleInput()
     if mouseSelected then
@@ -57,46 +59,42 @@ function Editor.update(dt)
         Statestack.push(Start)
     end
 
-    if mX and clickTimer() then 
-        clickTimer = Timer.simple(.2)
-        mouseCircleSize.current = mouseCircleSize.click
+    -- if mX and clickTimer() then 
+    --     clickTimer = Timer.simple(.2)
+    --     mouseCircleSize.current = mouseCircleSize.click
 
-        if mouseSelected then 
+    --     if mouseSelected then 
             
-            local xval = math.max((math.floor((mouseX)/24+.5))*24-8, Grid.leftwall)
-            local yval = math.max((math.floor((mouseY)/24+.5))*24-12, Grid.ceiling) 
-            xval = math.Clamp(xval, Grid.leftwall, Grid.rightwall)
-            yval = math.Clamp(yval, Grid.ceiling, Grid.floor)
+    --         local xval = math.max((math.floor((mouseX)/24+.5))*24-8, Grid.leftwall)
+    --         local yval = math.max((math.floor((mouseY)/24+.5))*24-12, Grid.ceiling) 
+    --         xval = math.Clamp(xval, Grid.leftwall, Grid.rightwall)
+    --         yval = math.Clamp(yval, Grid.ceiling, Grid.floor)
 
 
-            local new_block = Editor.blockInit(mouseSelected.tile_i, xval, yval)
-            table.insert(Editor.levelFront, new_block)
+    --         local new_block = Editor.blockInit(mouseSelected.tile_i, xval, yval)
+    --         table.insert(Editor.levelFront, new_block)
 
-            mouseSelected = nil
+    --         mouseSelected = nil
         
-        else
-            for _, block in pairs(selectables) do
-                if block.collides(mouseX, mouseY) then 
+    --     else
+    --         for _, block in pairs(selectables) do
+    --             if block.collides(mouseX, mouseY) then 
 
-                    local selected_block = Editor.blockInit(block.tile_i, mouseX-Block.size/2, mouseY-Block.size/2)
-                    mouseSelected = selected_block
-                    print("selection attempted")
-                    break
-                end
-            end
-        end
+    --                 local selected_block = Editor.blockInit(block.tile_i, mouseX-Block.size/2, mouseY-Block.size/2)
+    --                 mouseSelected = selected_block
+    --                 print("selection attempted")
+    --                 break
+    --             end
+    --         end
+    --     end
         
-    else mouseCircleSize.current = mouseCircleSize.default end
+    -- else mouseCircleSize.current = mouseCircleSize.default end
     
 end
 
 function Editor.draw()
     
     Editor.drawTileSquare()
-
-    if mouseSelected then 
-        mouseSelected.draw() 
-    end
 
     love.graphics.rectangle("line", Grid.leftwall, Grid.ceiling, Grid.length+24, Grid.width+24)
     Editor.drawSelectTiles()
@@ -107,13 +105,13 @@ function Editor.draw()
 end
 
 function Editor.drawLevelTiles()
-    
 
     for _, block in pairs(Editor.levelFront) do
         love.graphics.setColor(1,1,1,1)
         block.draw()
 
     end
+
 end
 
 function Editor.drawSelectTiles()
@@ -163,14 +161,23 @@ function Editor.goOtherSide()
 end
 
 function Editor.dropBlock()
-    local new_block = Editor.blockInit(mouseSelected.tile_i, xval, yval)
-    table.insert(Editor.levelFront, new_block)
+    local xval = math.max((math.floor((mouseX)/24+.5))*24-8, Grid.leftwall)
+    local yval = math.max((math.floor((mouseY)/24+.5))*24-12, Grid.ceiling) 
+    --local new_block = Editor.blockInit(mouseSelected.tile_i, xval, yval)
+    --table.insert(Editor.levelFront, new_block)
 
+    mouseSelected.x = xval
+    mouseSelected.y = yval
     mouseSelected = nil
+    
 end
 
 function Editor.deleteSelectedBlock()
     mouseSelected = nil
+end
+
+function Editor.selectBlock()
+    mouseSelected = Editor.currentHover
 end
 
 function Editor.saveLevel(filename)
@@ -179,6 +186,7 @@ end
 
 function Editor.create(tile_i)
     local newBlock = Editor.blockInit(tile_i, mouseX, mouseY)
+    table.insert(Editor.levelFront, newBlock)
     mouseSelected = newBlock
 end
 
@@ -194,6 +202,11 @@ end
 
 function Editor.getCurrentHover()
     for _, block in pairs(selectables) do
+        if block.collides(mouseX, mouseY) then 
+            return block
+        end
+    end
+    for _, block in pairs(Editor.levelFront) do
         if block.collides(mouseX, mouseY) then 
             return block
         end

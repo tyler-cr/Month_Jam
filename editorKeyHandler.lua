@@ -4,10 +4,16 @@ Editor = {}
 -- I know this is datastructs, but having this here
 -- makes sense for now
 function Editor.getInputState()
+
+    local mouseClick = nil
+
+    if love.mouse.isDown(1) then mouseClick = 1
+    elseif love.mouse.isDown(2) then mouseClick = 2
+    else mouseClick = nil end 
+
     return {
         key   = Editor.grabKey(),
-        m1    = love.mouse.isDown(1),
-        m2    = love.mouse.isDown(2),
+        mouse = mouseClick,
         shift = love.keyboard.isDown("lshift", "rshift"),
         alt   = love.keyboard.isDown("lalt", "ralt"),
         cmd   = love.keyboard.isDown("lgui", "rgui")
@@ -16,31 +22,51 @@ end
 
 function Editor.handleInput()
     local state = Editor.getInputState()
-    local action = state.key or m1 or m2
+    local action = state.key or state.mouse
     if not action then return end
 
 
+    local mod = ""
     if state.shift then mod = "shift"
     elseif state.alt then mod = "alt"
     elseif state.cmd then mod = "cmd"
+    elseif state.mouse then mod = "mouse"
     else mod = "normal" end
 
-    context = Editor.getContext()
+    local context = Editor.getContext()
 
-    local func = Editor[context.."Actions"][mod][action]
-    if func then func() end
+    local actions = Editor[context.."Actions"]
+    local layer   = actions and actions[mod]
+    local func    = layer and layer[action]
+
+    if mod == "mouse" and clickTimer then 
+        clickTimer = Timer.simple(.25) 
+    
+    elseif mod == "mouse" then
+        return
+    end
+
+
+
+    if func then 
+        print(context.." : "..mod.." : "..action)
+        func() 
+    end
 end
 
 function Editor.grabKey()
     for _, k in ipairs(getKeys()) do
         if k ~= "lshift" and k ~= "rshift" and k~= "lalt" and k~= "ralt" and k~= "lgui" and k~= "rgui" then 
-            return Editor.shiftKeyEnum[k]
+            return k
         end
     end
 end
 
 function Editor.getContext()
-    if mouseSelected then return "block" 
+    local arrowCheck = Editor.grabKey()
+    if arrowCheck == "left" or arrowCheck == "right" or arrowCheck == "up" or arrowCheck == "down" then
+        return "default"
+    elseif mouseSelected then return "block" 
     elseif Editor.getCurrentHover() then return "hover"
     else return "default" end
 end
