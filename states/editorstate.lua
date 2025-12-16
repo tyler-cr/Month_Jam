@@ -10,7 +10,15 @@ local   mouseCircleSize = {default = 7, click = 5}
 
 function Editor.init()
     mouseSelected = nil
+
+    Editor.stringCoord = Editor.coordsToString(0, 0)
+    Editor.currentHoverIndex = -1
     Editor.currentHover = nil
+    
+
+    Editor.mouseOverSelectable = false
+    Editor.inLevel = false
+    
     clickTimer = Timer.simple(0) --init as timer so we don't have nil issues
 
     mouseCircleSize.current = 7
@@ -19,6 +27,7 @@ function Editor.init()
     Editor.levelFront = {}
     Editor.levelBack = {}
     Editor.curLevel = Editor.levelFront
+    Editor.notCurLevel = Editor.levelBack
 
     selectables = {}
 
@@ -29,8 +38,8 @@ function Editor.init()
     for i = 1, 5 do
         for j = 1, 3 do
             if      tile == 12 then tile = 18
-            elseif  tile == 22 then tile = 23
-            elseif  tile == 24 then tile = 26 end
+            elseif  tile == 22 then break end
+            
 
             local new_block = Editor.blockInit(tile, drawX*(j)+20, drawY*(i)+64)
             table.insert(selectables, new_block)
@@ -38,10 +47,18 @@ function Editor.init()
         end
     end
 
+    local new_block = Editor.blockInit(23, drawX*(1)+20, drawY*(6)+64)
+    table.insert(selectables, new_block)
+    local new_block = Editor.blockInit(26, drawX*(1)+20, drawY*(7)+64)
+    table.insert(selectables, new_block)
+
 end
 
 function Editor.update(dt)
     Editor.currentHover = Editor.getCurrentHover()
+    local xval = math.max((math.floor((mouseX)/24+.5))*24-8, Grid.leftwall)
+    local yval = math.max((math.floor((mouseY)/24+.5))*24-12, Grid.ceiling)
+    Editor.stringCoord = Editor.coordsToString(xval, yval)
 
     Editor.handleInput()
     if mouseSelected then
@@ -58,43 +75,14 @@ function Editor.update(dt)
         Statestack.pop()
         Statestack.push(Start)
     end
-
-    -- if mX and clickTimer() then 
-    --     clickTimer = Timer.simple(.2)
-    --     mouseCircleSize.current = mouseCircleSize.click
-
-    --     if mouseSelected then 
-            
-    --         local xval = math.max((math.floor((mouseX)/24+.5))*24-8, Grid.leftwall)
-    --         local yval = math.max((math.floor((mouseY)/24+.5))*24-12, Grid.ceiling) 
-    --         xval = math.Clamp(xval, Grid.leftwall, Grid.rightwall)
-    --         yval = math.Clamp(yval, Grid.ceiling, Grid.floor)
-
-
-    --         local new_block = Editor.blockInit(mouseSelected.tile_i, xval, yval)
-    --         table.insert(Editor.levelFront, new_block)
-
-    --         mouseSelected = nil
-        
-    --     else
-    --         for _, block in pairs(selectables) do
-    --             if block.collides(mouseX, mouseY) then 
-
-    --                 local selected_block = Editor.blockInit(block.tile_i, mouseX-Block.size/2, mouseY-Block.size/2)
-    --                 mouseSelected = selected_block
-    --                 print("selection attempted")
-    --                 break
-    --             end
-    --         end
-    --     end
-        
-    -- else mouseCircleSize.current = mouseCircleSize.default end
     
 end
 
 function Editor.draw()
     
+    love.graphics.print(Editor.stringCoord)
     Editor.drawTileSquare()
+    if mouseSelected then mouseSelected.draw() end
 
     love.graphics.rectangle("line", Grid.leftwall, Grid.ceiling, Grid.length+24, Grid.width+24)
     Editor.drawSelectTiles()
@@ -106,11 +94,15 @@ end
 
 function Editor.drawLevelTiles()
 
-    for _, block in pairs(Editor.levelFront) do
-        love.graphics.setColor(1,1,1,1)
+    love.graphics.setColor(1,1,1,1)
+    for _, block in pairs(Editor.curLevel) do
         block.draw()
-
     end
+    love.graphics.setColor(.8,.9,.8,.4)
+    for _, block in pairs(Editor.notCurLevel) do
+        block.draw()
+    end
+    love.graphics.setColor(1,1,1,1)
 
 end
 
@@ -136,48 +128,86 @@ function Editor.drawSelectTiles()
 end
 
 function Editor.blockInit(tile, xval, yval)
-
+    print(tile)
     local block = {
         x = xval,
         y = yval,
         tile_i = tile,
         rotation = 0,
-        flipped = false
+        flipXval = 1,
+        flipYval = 1
     }
 
-    block.draw      =   function() drawTile_Editor(block.tile_i, block.x, block.y) end
+    if tile == 23 or tile == 26 then
+        block.draw = function() drawTileBH_Editor(block.tile_i, block.x, block.y, block.rotation, block.flipXval, block.flipYval) end
+    else 
+        block.draw      =   function() drawTile_Editor(block.tile_i, block.x, block.y, block.rotation, block.flipXval, block.flipYval) end 
+    end
+    
+    
     block.collides  =   function() return AABB(mouseX, mouseX, mouseY, mouseY, block.x, block.x+Block.size, block.y, block.y+Block.size) end
-    block.rotate    =   function(self, value) self.rotation = self.rotation + value end
-    block.flipX     =   function(self) flipped = not flipped end
-    block.flipY     =   function(self) self.flipX() self.rotate(180) end
+    block.rotate    =   function(value) block.rotation = block.rotation + value*math.pi/180 end
+    block.flipX     =   function() block.flipXval = block.flipXval*(-1) end
+    block.flipY     =   function() block.flipYval = block.flipYval*(-1) end
 
     return block
 
 end
 
 function Editor.goOtherSide()
-    if Editor.curLevel == Editor.levelFront then Editor.curLevel = Editor.levelBack
-    else Editor.curLevel = Editor.levelBack end
+    if Editor.curLevel == Editor.levelFront then 
+        Editor.curLevel = Editor.levelBack
+        Editor.notCurLevel = Editor.levelFront
+    else 
+        Editor.curLevel = Editor.levelFront
+        Editor.notCurLevel = Editor.levelBack
+
+    end
 end
 
 function Editor.dropBlock()
     local xval = math.max((math.floor((mouseX)/24+.5))*24-8, Grid.leftwall)
     local yval = math.max((math.floor((mouseY)/24+.5))*24-12, Grid.ceiling) 
-    --local new_block = Editor.blockInit(mouseSelected.tile_i, xval, yval)
-    --table.insert(Editor.levelFront, new_block)
-
-    mouseSelected.x = xval
-    mouseSelected.y = yval
-    mouseSelected = nil
     
+    if not Editor.inLevel then
+        local r = mouseSelected.rotation
+        local flipX = mouseSelected.flipXval
+        local flipY = mouseSelected.flipYval
+        local new_block = Editor.blockInit(mouseSelected.tile_i, xval, yval)
+        new_block.rotation = r
+        new_block.flipXval = flipX
+        new_block.flipYval = flipY
+        if Editor.curLevel[Editor.stringCoord] then 
+            print("Block already placed at this location!")
+            return
+        
+        else
+            Editor.curLevel[Editor.stringCoord] = new_block
+        end
+
+        --table.insert(Editor.curLevel, new_block)
+        clickTimer = Timer.simple(.05)
+    else
+        mouseSelected.x = xval
+        mouseSelected.y = yval
+    end
+    
+    
+    mouseSelected = nil
+    Editor.inLevel = false
 end
 
 function Editor.deleteSelectedBlock()
+    if Editor.curLevel[Editor.stringCoord] then Editor.deleteBlock() end
     mouseSelected = nil
 end
 
 function Editor.selectBlock()
-    mouseSelected = Editor.currentHover
+    if Editor.mouseOverSelectable then Editor.copyBlock()
+    else 
+        mouseSelected = Editor.currentHover
+        Editor.inLevel = true 
+    end
 end
 
 function Editor.saveLevel(filename)
@@ -185,8 +215,8 @@ function Editor.saveLevel(filename)
 end
 
 function Editor.create(tile_i)
+    if mouseSelected then Editor.dropBlock() end
     local newBlock = Editor.blockInit(tile_i, mouseX, mouseY)
-    table.insert(Editor.levelFront, newBlock)
     mouseSelected = newBlock
 end
 
@@ -202,27 +232,36 @@ end
 
 function Editor.getCurrentHover()
     for _, block in pairs(selectables) do
+        if block.collides(mouseX, mouseY) then
+            Editor.mouseOverSelectable = true 
+            return block
+        end
+    end
+    Editor.mouseOverSelectable = false
+    local xval = math.max((math.floor((mouseX)/24+.5))*24-8, Grid.leftwall)
+    local yval = math.max((math.floor((mouseY)/24+.5))*24-12, Grid.ceiling)
+    
+    local block = Editor.curLevel[Editor.coordString]
+    
+    for _, block in pairs(Editor.curLevel) do
         if block.collides(mouseX, mouseY) then 
             return block
         end
     end
-    for _, block in pairs(Editor.levelFront) do
-        if block.collides(mouseX, mouseY) then 
-            return block
-        end
-    end
+    Editor.currentHoverIndex = -1
     return nil
 end
 
 function Editor.copyBlock()
-    if Editor.currentHover then
-        Editor.create(Editor.currentHover.tile_i)
+    if Editor.curLevel[Editor.stringCoord] then
+        Editor.create(Editor.curLevel[Editor.stringCoord].tile_i)
     end
 end
 
 function Editor.deleteBlock()
-    if Editor.currentHover then
-        Editor.currentHover = nil
+    if Editor.curLevel[Editor.stringCoord] then
+        Editor.curLevel[Editor.stringCoord] = nil
+        --Editor.currentHover = nil
     end
 end
 
@@ -231,4 +270,8 @@ function Editor.connectTeleporters(bool)
 end
 --TODO
 function Editor.disconnectTeleporters(bool)
+end
+
+function Editor.coordsToString(x, y)
+    return tostring(x).." : "..tostring(y)
 end

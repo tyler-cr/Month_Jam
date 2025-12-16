@@ -71,6 +71,15 @@ function drawBH(type, new_tile)
         love.graphics.draw(Tileset, type.bottom[1], middleX, middleY+Block.size, 0)
 end
 
-function drawTile_Editor(index, x, y)
-    love.graphics.draw(Tileset, quadtable[index], x, y)
+function drawTile_Editor(index, x, y, rotation, flipXval, flipYval)
+    love.graphics.draw(Tileset, quadtable[index], x+Block.size/2, y+Block.size/2, rotation, flipXval, flipYval, Block.size/2, Block.size/2)
+end
+
+--still need to handle rotations and flips
+function drawTileBH_Editor(index, x, y, rotation)
+    for i = 1, 3 do
+        love.graphics.draw(Tileset, quadtable[index-12+i], x+Block.size*(i-2), y-Block.size)
+        love.graphics.draw(Tileset, quadtable[index-2+i], x+Block.size*(i-2), y)
+    end
+        love.graphics.draw(Tileset, quadtable[index+10], x, y+Block.size)
 end

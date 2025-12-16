@@ -39,8 +39,9 @@ function Editor.handleInput()
     local layer   = actions and actions[mod]
     local func    = layer and layer[action]
 
-    if mod == "mouse" and clickTimer then 
-        clickTimer = Timer.simple(.25) 
+    if mod == "mouse" and clickTimer() and (Editor.currentHover or mouseSelected) then 
+        clickTimer = Timer.simple(.05)-- adjust till you find the right spot for this
+        print("starting timer")
     
     elseif mod == "mouse" then
         return
@@ -66,7 +67,7 @@ function Editor.getContext()
     local arrowCheck = Editor.grabKey()
     if arrowCheck == "left" or arrowCheck == "right" or arrowCheck == "up" or arrowCheck == "down" then
         return "default"
-    elseif mouseSelected then return "block" 
+    elseif mouseSelected then return "default" 
     elseif Editor.getCurrentHover() then return "hover"
     else return "default" end
 end
@@ -97,6 +98,17 @@ Editor.shiftKeyEnum = {
 --map actions will likely go in here at some point
 Editor.defaultActions = {
     normal = {
+        ["e"] = function() if mouseSelected then mouseSelected.rotate(90) end end,
+        ["q"] = function() if mouseSelected then mouseSelected.rotate(-90) end end,
+        ["a"] = function() if mouseSelected then mouseSelected.flipX() end end,
+        ["d"] = function() if mouseSelected then mouseSelected.flipX() end end,
+        ["w"] = function() if mouseSelected then mouseSelected.flipY() end end,
+        ["s"] = function() if mouseSelected then mouseSelected.flipY() end end,
+        ["g"] = function() Editor.connectTeleporters(true) end, --not implimented yet
+        ["h"] = function() Editor.connectTeleporters(false) end,--not implimented yet
+        ["x"] = function() Editor.goOtherSide() end,
+        ["return"] = function() Editor.dropBlock() end,
+        ["delete"] = function() Editor.deleteSelectedBlock() end,
         ["1"] = function() Editor.create(Editor.keyEnum["1"]) end,
         ["2"] = function() Editor.create(Editor.keyEnum["2"]) end,
         ["3"] = function() Editor.create(Editor.keyEnum["3"]) end,
@@ -116,6 +128,8 @@ Editor.defaultActions = {
     },
 
     shift = {
+        ["g"] = function() Editor.disconnectTeleporters(true) end,--not implimented
+        ["h"] = function() Editor.disconnectTeleporters(false) end,--not implimented
         ["1"] = function() Editor.create(Editor.shiftKeyEnum["1"]) end,
         ["2"] = function() Editor.create(Editor.shiftKeyEnum["2"]) end,
         ["3"] = function() Editor.create(Editor.shiftKeyEnum["3"]) end,
@@ -132,32 +146,13 @@ Editor.defaultActions = {
         ["right"]   = function() love.mouse.setPosition(Grid.rightwall, mouseY) end,
         ["up"]      =    function() love.mouse.setPosition(mouseX, Grid.ceiling) end,
         ["down"]    =  function() love.mouse.setPosition(mouseX, Grid.floor) end
-    }
-}
-
-Editor.blockActions = {
-    normal = {
-        ["e"] = function(b) b:rotate(90) end,
-        ["q"] = function(b) b:rotate(-90) end,
-        ["a"] = function(b) b:flipX() end,
-        ["d"] = function(b) b:flipX() end,
-        ["w"] = function(b) b:flipY() end,
-        ["s"] = function(b) b:flipY() end,
-        ["g"] = function() Editor.connectTeleporters(true) end, --not implimented yet
-        ["h"] = function() Editor.connectTeleporters(false) end,--not implimented yet
-        ["return"] = function() Editor.dropBlock() end,
-        ["delete"] = function() Editor.deleteSelectedBlock() end
-    },
-
-    shift = {
-        ["g"] = function() Editor.disconnectTeleporters(true) end,--not implimented
-        ["h"] = function() Editor.disconnectTeleporters(false) end,--not implimented
     },
 
     mouse = {
         [1] = function() Editor.dropBlock() end,
         [2] = function() Editor.deleteSelectedBlock() end
     }
+
 }
 
 --TODO: more or less not implemented
