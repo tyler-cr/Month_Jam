@@ -93,6 +93,7 @@ function Level.loadLevel(i)
     for coords, blockID in pairs(level) do
         local x, y = coords:match("(%d+)%s*:%s*(%d+)")
         x, y = tonumber(x), tonumber(y)
+        print(blockID)
         local newBlock = id_to_block(blockID).init(x, y)
         print(newBlock.name)
         table.insert(retTable, newBlock)
@@ -102,8 +103,7 @@ function Level.loadLevel(i)
 end
 
 function id_to_block(id)
-    if id == 1          then return Block
-    elseif id == 2      then return Computer
+    if id == 2      then return Computer
     elseif id == 3      then return Bouncer
     elseif id == 4      then return DirectionalDoor
     elseif id == 5      then return OneWayDoor
@@ -117,6 +117,7 @@ function id_to_block(id)
     elseif id == 21     then return Glass
     elseif id == 23     then return Blackhole
     elseif id == 26     then return Whitehole
+    else return Block
     end
 end
 

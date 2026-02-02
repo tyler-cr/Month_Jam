@@ -1,8 +1,12 @@
 Tileset =       love.graphics.newImage('images/tileset.png')
 StartButtons =  love.graphics.newImage('images/startbuttons1.png')
 
--- This should be temporary. Need better image
+
+-- These should be temporary. Need better images
 SaveButton = love.graphics.newImage('images/SaveLevel.png')
+LoadButton = love.graphics.newImage('images/LoadLevel.png')
+ 
+
 
 function GenerateQuads(atlas, tilewidth, tileheight)
     local sheetWidth = atlas:getWidth() / tilewidth
@@ -26,8 +30,10 @@ end
 local quadtable =  GenerateQuads(Tileset,       24,     24)
 local startQuad =  GenerateQuads(StartButtons,  128,    64)
 local saveQuad  =  GenerateQuads(SaveButton,    128,    64)
+local loadQuad  =  GenerateQuads(SaveButton,    128,    64)
 
 saveButton = saveQuad[1]
+loadButton = loadQuad[1]
 
 startButton1 = startQuad[1]
 startButton2 = startQuad[2]
@@ -57,14 +63,17 @@ tileset.tile.whitehole = {top = {quadtable[15], quadtable[16], quadtable[17]}, m
 
 tileset.rotation.default = 0
 
--- this really needs to me temporary
+-- these really needs to me temporary
 function drawSave(x, y)
     love.graphics.draw(SaveButton, saveQuad[1], 660, 8)
 end
 
-function drawTile(tile, new_tile, r)
+function drawLoad(x, y)
+    love.graphics.draw(LoadButton, loadQuad[1], 660, 64)
+end
 
-    if r == nil then r = tileset.rotation.default end
+function drawTile(tile, new_tile, r)
+    r = r or tileset.rotation.default
 
     love.graphics.draw(Tileset, tile, new_tile.my_x+12, new_tile.my_y+12, r, 1, 1, 12, 12)
 end

@@ -328,7 +328,7 @@ function FallAways.init(x, y)
     new_fallaway.body:setUserData(new_fallaway)
     new_fallaway.fixture:setUserData(new_fallaway)
     
-    new_fallaway.draw = function() drawTile(FallAways.tile, new_fallaway, new_fallaway) end
+    new_fallaway.draw = function() drawTile(FallAways.tile, new_fallaway) end
 
     return new_fallaway
 end

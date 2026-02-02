@@ -31,7 +31,7 @@ Player = {
     grounded = false
 }
 
-Physics.createRectangle(Player, "dynamic", Block.size,Block.size)
+Physics.createRectangle(Player, "dynamic", Block.size-1,Block.size)
 Player.fixture:setUserData(Player)
 Player.body:setUserData(Player)
 Player.fixture:setRestitution(Player.my_restitution )

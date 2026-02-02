@@ -80,9 +80,15 @@ function Editor.update(dt)
     --this needs to be implemented better. Find a way to put in editorKeyHandler
     if mouseX > 660 and mouseX < 788 and mouseY > 8 and mouseY < 72 then
         overSave = true
-        if love.mouse.isDown(1) then Editor.saveLevel("test") end
+        if love.mouse.isDown(1) then Editor.saveLevel() end
 
     else overSave = false end
+
+    if mouseX > 660 and mouseX < 788 and mouseY > 64 and mouseY < 128 then
+        overLoad = true
+        if love.mouse.isDown(1) then Editor.loadLevel() end
+
+    else overLoad = false end
 
 
 end
@@ -100,6 +106,7 @@ function Editor.draw()
     love.graphics.circle("fill", mouseX, mouseY, mouseCircleSize.current, mouseCircleSize.current)
 
     drawSave()
+    drawLoad()
 
 end
 
@@ -139,7 +146,7 @@ function Editor.drawSelectTiles()
 end
 
 function Editor.blockInit(tile, xval, yval)
-    print(tile)
+    --print(tile)
     local block = {
         x = xval,
         y = yval,
@@ -220,6 +227,21 @@ function Editor.selectBlock()
         mouseSelected = Editor.currentHover
         Editor.inLevel = true 
     end
+end
+
+function Editor.loadLevel(level_id)
+    Editor.curLevel = {}
+
+    print("attempting to load")
+    level_id = level_id or 1
+    toLoad = rooms[level_id]
+    for coords, block_id in pairs(toLoad) do
+        local x, y = coords:match("(%d+)%s*:%s*(%d+)")
+        x, y = tonumber(x), tonumber(y)
+        local new_block = Editor.blockInit(block_id, x, y)
+        Editor.curLevel[coords] = new_block
+    end
+
 end
 
 function Editor.saveLevel()
