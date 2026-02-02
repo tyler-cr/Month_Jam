@@ -7,30 +7,29 @@ end
 
 require("mapmaker")
 
+currentLevel = 1
+nextLevelFlag = false
+
 Level = {}
 
 function Level.init()
 
-    Level.objects = {Player}
+    Level.objects = Level.loadLevel(currentLevel)
+    table.insert(Level.objects, Player)
 
         --testing out blocks 
-    for i = 0, 5 do
-        if i%2 == 0 then 
-            local test = Blackhole.init(Grid.leftwall+80*i+24, Grid.center.y)
-            table.insert(Level.objects, test)
-        else
-            local test = Whitehole.init(Grid.leftwall+80*i+24, Grid.center.y)
-            table.insert(Level.objects, test)
-        end
+    -- for i = 0, 5 do
+    --     if i%2 == 0 then 
+    --         local test = Blackhole.init(Grid.leftwall+80*i+24, Grid.center.y)
+    --         table.insert(Level.objects, test)
+    --     else
+    --         local test = Whitehole.init(Grid.leftwall+80*i+24, Grid.center.y)
+    --         table.insert(Level.objects, test)
+    --     end
 
-    end
+    -- end
 
-
-
-
-    Level.objects = TableConcat(Level.objects, MapMaker.generateTableFromPath("images/testlevel.png"))
-
-    local test = Cannon.init(Grid.leftwall+64, Grid.floor)
+    -- local test = Cannon.init(Grid.leftwall+64, Grid.floor)
     table.insert(Level.objects, test)
 
 end
@@ -40,6 +39,14 @@ local fixed_dt = 1/60
 local accumulator = 0
 
 function Level.update(dt)
+
+    if nextLevelFlag then
+        currentLevel = currentLevel+1
+        print(string.format("going to level %d. There are %d total levels. \n", currentLevel, #rooms))
+        nextLevelFlag = false
+        Level.physicsCleanUp()
+        Level.init()
+    end
 
     if love.keyboard.isDown("escape") then 
         Statestack.pop()
@@ -75,4 +82,49 @@ function Level.draw()
     love.graphics.print(math.floor(Player.highest), 10, 30)
     love.graphics.print(tostring(Player.grounded), 10, 40)
 
+end
+
+
+function Level.loadLevel(i)
+    --TODO: Grab rotation, flip, etc
+    retTable = {}
+
+    local level = rooms[i]
+    for coords, blockID in pairs(level) do
+        local x, y = coords:match("(%d+)%s*:%s*(%d+)")
+        x, y = tonumber(x), tonumber(y)
+        local newBlock = id_to_block(blockID).init(x, y)
+        table.insert(retTable, newBlock)
+    end
+
+    return retTable
+end
+
+function id_to_block(id)
+    if id == 1          then return Block
+    elseif id == 2      then return Computer
+    elseif id == 3      then return Bouncer
+    elseif id == 4      then return DirectionalDoor
+    elseif id == 5      then return OneWayDoor
+    elseif id == 6      then return OneWayDoor --TODO: this needs to be OpenDoor but that hasn't been implimented in tiles? 
+    elseif id == 7      then return Cannon
+    elseif id == 8      then return Teleport
+    elseif id == 11     then return Spikes
+    elseif id == 18     then return Ice
+    elseif id == 19     then return FallAways
+    elseif id == 20     then return Accelerator
+    elseif id == 21     then return Glass
+    elseif id == 23     then return Blackhole
+    elseif id == 26     then return Whitehole
+    end
+end
+
+function Level.physicsCleanUp()
+    for _, body in ipairs(world:getBodies()) do
+        local ud = body:getUserData()
+        if not (ud and ud.name == "Player") then
+            body:destroy()
+        end
+    end
+    Grid.createBorder()
 end

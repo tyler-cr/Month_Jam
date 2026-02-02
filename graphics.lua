@@ -1,6 +1,9 @@
 Tileset =       love.graphics.newImage('images/tileset.png')
 StartButtons =  love.graphics.newImage('images/startbuttons1.png')
 
+-- This should be temporary. Need better image
+SaveButton = love.graphics.newImage('images/SaveLevel.png')
+
 function GenerateQuads(atlas, tilewidth, tileheight)
     local sheetWidth = atlas:getWidth() / tilewidth
     local sheetHeight = atlas:getHeight() / tileheight
@@ -20,8 +23,11 @@ function GenerateQuads(atlas, tilewidth, tileheight)
     return spritesheet
 end
 
-local quadtable =  GenerateQuads(Tileset,       24, 24)
-local startQuad =  GenerateQuads(StartButtons,  128, 64)
+local quadtable =  GenerateQuads(Tileset,       24,     24)
+local startQuad =  GenerateQuads(StartButtons,  128,    64)
+local saveQuad  =  GenerateQuads(SaveButton,    128,    64)
+
+saveButton = saveQuad[1]
 
 startButton1 = startQuad[1]
 startButton2 = startQuad[2]
@@ -51,6 +57,10 @@ tileset.tile.whitehole = {top = {quadtable[15], quadtable[16], quadtable[17]}, m
 
 tileset.rotation.default = 0
 
+-- this really needs to me temporary
+function drawSave(x, y)
+    love.graphics.draw(SaveButton, saveQuad[1], 660, 8)
+end
 
 function drawTile(tile, new_tile, r)
 

@@ -2,7 +2,8 @@
     "Lua.diagnostics.globals": [
         "love",
         "deep_copy",
-        "testBlock"
+        "testBlock",
+        "Editor"
     ],
     "Lua.diagnostics.disable": [
         "lowercase-global"

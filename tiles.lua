@@ -130,6 +130,7 @@ function Block.init(x, y)
 
     new_block.name = "Block"
     Physics.createRectangle(new_block)
+    new_block.body:setUserData(new_block)
     new_block.fixture:setUserData(new_block)
 
     new_block.update = function(dt)
@@ -147,6 +148,7 @@ function Computer.init(x, y)
     local new_computer = Block.init(x, y)
 
     new_computer.name = "Computer"
+    new_computer.body:setUserData(new_computer)
     new_computer.fixture:setUserData(new_computer)
 
     new_computer.draw = function() drawTile(Computer.tile, new_computer, new_computer.my_r) end
@@ -159,6 +161,7 @@ function Bouncer.init(x, y)
 
     new_bouncer.name = "Bouncer"
 
+    new_bouncer.body:setUserData(new_bouncer)
     new_bouncer.fixture:setUserData(new_bouncer)
 
     new_bouncer.draw = function() drawTile(Bouncer.tile, new_bouncer, new_bouncer.my_r) end
@@ -171,6 +174,7 @@ function OneWayDoor.init(x, y)
 
     new_onewaydoor.name = "OneWayDoor"
 
+    new_onewaydoor.body:setUserData(new_onewaydoor)
     new_onewaydoor.fixture:setUserData(new_onewaydoor)
 
     new_onewaydoor.draw = function() drawTile(OneWayDoor.tile, new_onewaydoor, new_onewaydoor.my_r) end
@@ -183,6 +187,7 @@ function DirectionalDoor.init(x, y)
 
     new_directionaldoor.name = "DirectionalDoor"
 
+    new_directionaldoor.body:setUserData(new_directionaldoor)
     new_directionaldoor.fixture:setUserData(new_directionaldoor)
 
     new_directionaldoor.draw = function() drawTile(DirectionalDoor.tile, new_directionaldoor, new_directionaldoor.my_r) end
@@ -196,7 +201,7 @@ function Cannon.init(x,y)
     new_cannon.name = "Cannon"
 
     new_cannon.update = function(dt) 
-        if new_cannon.fixture.hit == true then
+        if new_cannon.body.hit == true then
             Statestack.push(CannonState(new_cannon))
         end
 
@@ -204,7 +209,9 @@ function Cannon.init(x,y)
 
     end
 
+    new_cannon.body:setUserData(new_cannon)
     new_cannon.fixture:setUserData(new_cannon)
+    
     new_cannon.draw = function() drawTile(Cannon.tile, new_cannon, new_cannon.my_r) end
 
     return new_cannon
@@ -216,7 +223,10 @@ function Teleport.init(x,y)
     new_teleporter.name = "Teleport"
     new_teleporter.connectedTo = nil
 
+    new_teleporter.body:setUserData(new_teleporter)
     new_teleporter.fixture:setUserData(new_teleporter)
+    
+    
     new_teleporter.draw = function () drawTile(Teleport.tile[1], new_teleporter, new_teleporter.my_r) end
     new_teleporter.connect = function(other_teleport) 
         new_teleporter.connectedTo = other_teleport
@@ -231,6 +241,7 @@ function Spikes.init(x, y)
 
     new_spikes.name = "Spikes"
 
+    new_spikes.body:setUserData(new_spikes)
     new_spikes.fixture:setUserData(new_spikes)
 
     new_spikes.draw = function() drawTile(Spikes.tile, new_spikes, new_spikes.my_r) end
@@ -248,6 +259,7 @@ function Blackhole.init(x, y)
 
     new_blackhole.name = "Blackhole"
 
+    new_blackhole.body:setUserData(new_blackhole)
     new_blackhole.fixture:setUserData(new_blackhole)
 
     new_blackhole.update = function(dt)
@@ -275,6 +287,7 @@ function Whitehole.init(x, y)
 
     new_whitehole.name = "Whitehole"
 
+    new_whitehole.body:setUserData(new_whitehole)
     new_whitehole.fixture:setUserData(new_whitehole)
 
     new_whitehole.update = function(dt)
@@ -298,7 +311,8 @@ function Ice.init(x, y)
     local new_ice = Bouncer.init(x, y)
 
     new_ice.name = "Ice"
-
+    
+    new_ice.body:setUserData(new_ice)
     new_ice.fixture:setUserData(new_ice)
     new_ice.fixture:setFriction(Ice.friction)
 
@@ -311,7 +325,9 @@ function FallAways.init(x, y)
 
     new_fallaway.name = "FallAways"
 
+    new_fallaway.body:setUserData(new_fallaway)
     new_fallaway.fixture:setUserData(new_fallaway)
+    
     new_fallaway.draw = function() drawTile(FallAways.tile, new_fallaway, new_fallaway) end
 
     return new_fallaway
@@ -322,7 +338,9 @@ function Accelerator.init(x, y)
 
     new_accelerator.name = "Accelerator"
 
+    new_accelerator.body:setUserData(new_accelerator)
     new_accelerator.fixture:setUserData(new_accelerator)
+    
     new_accelerator.draw = function() drawTile(Accelerator.tile, new_accelerator, new_accelerator.my_r) end
 
     return new_accelerator
@@ -333,7 +351,9 @@ function Glass.init(x, y)
 
     new_glass.name = "Glass"
 
+    new_glass.body:setUserData(new_glass)
     new_glass.fixture:setUserData(new_glass)
+    
     new_glass.draw = function()
         drawTile(Glass.tile, new_glass, new_glass.my_r) end
 

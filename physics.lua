@@ -16,10 +16,6 @@ function beginContact(a, b, coll)
     if Physics.collidedObjects(a, b, "Player", "Glass") then
         Physics.glassCollision(nx, ny, nonplayer)
 
-    elseif Physics.collidedObjects(a, b, "Player", "Computer") then
-        print("LEVEL COMPLETE!!!")
-        -- TODO
-
     elseif Physics.collidedObjects(a, b, "Player", "Bouncer") then
 
         local plX, plY = Player.body:getLinearVelocity()
@@ -68,6 +64,12 @@ function endContact(a, b, coll)
         end, function ()
                 other.body:destroy()
         end)
+
+
+    elseif Physics.collidedObjects(a, b, "Player", "Computer") then
+        nextLevelFlag = true
+        print("LEVEL COMPLETE!!!")
+        -- TODO
     end
 
 end

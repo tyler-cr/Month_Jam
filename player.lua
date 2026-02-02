@@ -33,6 +33,7 @@ Player = {
 
 Physics.createRectangle(Player, "dynamic", Block.size,Block.size)
 Player.fixture:setUserData(Player)
+Player.body:setUserData(Player)
 Player.fixture:setRestitution(Player.my_restitution )
 
 Player.dx.max.walk = 210

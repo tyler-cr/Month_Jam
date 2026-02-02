@@ -10,6 +10,7 @@ require("tiles")
 require("states/cannonstate")
 require("timer")
 require("mapmaker")
+require ("rooms")
 
 
 love.graphics.setDefaultFilter('nearest', 'nearest')

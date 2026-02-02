@@ -14,16 +14,16 @@ function Editor.init()
     Editor.stringCoord = Editor.coordsToString(0, 0)
     Editor.currentHoverIndex = -1
     Editor.currentHover = nil
-    
+
 
     Editor.mouseOverSelectable = false
     Editor.inLevel = false
-    
+
     clickTimer = Timer.simple(0) --init as timer so we don't have nil issues
 
     mouseCircleSize.current = 7
 
-    
+
     Editor.levelFront = {}
     Editor.levelBack = {}
     Editor.curLevel = Editor.levelFront
@@ -39,7 +39,7 @@ function Editor.init()
         for j = 1, 3 do
             if      tile == 12 then tile = 18
             elseif  tile == 22 then break end
-            
+
 
             local new_block = Editor.blockInit(tile, drawX*(j)+20, drawY*(i)+64)
             table.insert(selectables, new_block)
@@ -75,7 +75,16 @@ function Editor.update(dt)
         Statestack.pop()
         Statestack.push(Start)
     end
-    
+
+
+    --this needs to be implemented better. Find a way to put in editorKeyHandler
+    if mouseX > 660 and mouseX < 788 and mouseY > 8 and mouseY < 72 then
+        overSave = true
+        if love.mouse.isDown(1) then Editor.saveLevel("test") end
+
+    else overSave = false end
+
+
 end
 
 function Editor.draw()
@@ -89,6 +98,8 @@ function Editor.draw()
     Editor.drawLevelTiles()
     love.graphics.setColor(1,1,1)
     love.graphics.circle("fill", mouseX, mouseY, mouseCircleSize.current, mouseCircleSize.current)
+
+    drawSave()
 
 end
 
@@ -141,7 +152,7 @@ function Editor.blockInit(tile, xval, yval)
     if tile == 23 or tile == 26 then
         block.draw = function() drawTileBH_Editor(block.tile_i, block.x, block.y, block.rotation, block.flipXval, block.flipYval) end
     else 
-        block.draw      =   function() drawTile_Editor(block.tile_i, block.x, block.y, block.rotation, block.flipXval, block.flipYval) end 
+        block.draw = function() drawTile_Editor(block.tile_i, block.x, block.y, block.rotation, block.flipXval, block.flipYval) end 
     end
     
     
@@ -182,6 +193,7 @@ function Editor.dropBlock()
             return
         
         else
+            -- shouldn't this be using the front and back logic, or am I tripping?
             Editor.curLevel[Editor.stringCoord] = new_block
         end
 
@@ -210,8 +222,41 @@ function Editor.selectBlock()
     end
 end
 
-function Editor.saveLevel(filename)
+function Editor.saveLevel()
+    --TODO: Grab rotation, flip, etc
+    local exists = io.open("rooms.lua", "r")
 
+    -- if (#Editor.curLevel + #Editor.notCurLevel == 0) then
+    --     --Need to fix this to handle my silly stringCoord logic
+    --     print("there are this many blocks ")
+    --     print(#Editor.levelFront + #Editor.levelBack)
+    --     print("No blocks inserted. Going back to main menu!")
+    --     Statestack.pop()
+    --     Statestack.push(Start)
+    --     return
+    
+    -- else
+        
+    if exists == nil then
+        print("this is broken. No Bueno!")
+    else
+        local file = io.open("rooms.lua", "a+")
+        if file then
+            levelString = "{"
+            for key, val in pairs(Editor.curLevel) do
+                levelString = levelString..string.format("['%s'] = %d, ", key, val.tile_i)
+            end
+            levelString = levelString.."}"
+
+            file:write(string.format("rooms['%s']= %s\n", newLevel, levelString))
+            file:close()
+        end
+        print("this should be saving")
+        Statestack.pop()
+        Statestack.push(Start)
+    end
+
+   --local file = io.
 end
 
 function Editor.create(tile_i)
@@ -231,6 +276,8 @@ function Editor.drawTileSquare()
 end
 
 function Editor.getCurrentHover()
+
+
     for _, block in pairs(selectables) do
         if block.collides(mouseX, mouseY) then
             Editor.mouseOverSelectable = true 
@@ -240,9 +287,9 @@ function Editor.getCurrentHover()
     Editor.mouseOverSelectable = false
     local xval = math.max((math.floor((mouseX)/24+.5))*24-8, Grid.leftwall)
     local yval = math.max((math.floor((mouseY)/24+.5))*24-12, Grid.ceiling)
-    
+
     local block = Editor.curLevel[Editor.coordString]
-    
+
     for _, block in pairs(Editor.curLevel) do
         if block.collides(mouseX, mouseY) then 
             return block
