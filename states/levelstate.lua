@@ -94,6 +94,7 @@ function Level.loadLevel(i)
         local x, y = coords:match("(%d+)%s*:%s*(%d+)")
         x, y = tonumber(x), tonumber(y)
         local newBlock = id_to_block(blockID).init(x, y)
+        print(newBlock.name)
         table.insert(retTable, newBlock)
     end
 
